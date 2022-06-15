@@ -1,0 +1,16 @@
+1) asm:
+    nasm main.asm -f bin -o boot_sect.bin
+
+2) c(X32):
+    1.gcc -m32 -masm=intel -fno-pie -ffreestanding -c kernel.c -o kernel.o
+        to see the output:  objdump -d kernel.o
+        repeat on all C files
+    2.ld -m elf_i386 -o kernel.bin -Ttext 0x1000 kernel.o --oformat binary
+        to see the output:  ndisasm -b 32 kernel.bin > check_file.tmp
+        concat the names of every object files that were created on former stage - FIRST ONE SHOULD BE THE KERNEL.O!
+
+3) make the overall image:
+    cat boot_sect.bin kernel.bin > os-image
+
+4) run with qemu:
+    qemu-system-x86_64 os-image
