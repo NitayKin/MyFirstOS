@@ -16,6 +16,7 @@ GENERAL:
 
 3) make the overall image(run inside parent folder):
     cat boot_sect.bin kernel.bin > os-image
+    to see the output:  ndisasm -b 32 os-image > check_file.tmp
 
 4) run with qemu:
     qemu-system-x86_64 os-image
@@ -23,3 +24,4 @@ GENERAL:
 5) delete unimportant files ( run on parent folder ):
     find . -name "*.o" -type f -delete
     find . -name "*.bin" -type f -delete
+    find . -name "*.tmp" -type f -delete

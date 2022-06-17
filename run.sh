@@ -1,6 +1,7 @@
 #!/bin/bash
 find . -name "*.o" -type f -delete #clean
 find . -name "*.bin" -type f -delete
+find . -name "*.tmp" -type f -delete
 
 cd ./kernel
 CFiles=`find . -name "*.c" -type f` #get all c files
@@ -25,3 +26,4 @@ cat boot_sect.bin kernel.bin > os-image # make image
 
 find . -name "*.o" -type f -delete #clean
 find . -name "*.bin" -type f -delete
+find . -name "*.tmp" -type f -delete

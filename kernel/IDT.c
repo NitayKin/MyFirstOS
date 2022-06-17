@@ -30,7 +30,6 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) { //set specif
 
 void empty_func()
 {
-
 }
 
 void idt_init() { //init idt table

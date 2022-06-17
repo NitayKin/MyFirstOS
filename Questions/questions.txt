@@ -1,0 +1,11 @@
+QUestions:
+
+1. max 50 sectors can be pasted to memory - why?
+2. why i need so many sectors for variables?
+
+Answer:
+1.  ?
+2.  we load our kernel in 0x1000.
+    remember! the 0x200 first bytes are THE BOOT SECTOR, therefor every reference to memory should be 0x200-0x1000 (-0xe00) where it should be.
+    in code we see that the memory is 0x4000 = WHICH MEANS IT IS 0X3200 IN THE OS IMAGE.
+    only relevant to not run-time initialized variables!
