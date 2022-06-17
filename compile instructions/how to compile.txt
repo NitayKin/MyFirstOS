@@ -8,7 +8,7 @@ GENERAL:
 
 2) c(X32, run inside kernel\drivers):
     1.gcc -m32 -masm=intel -fno-pie -ffreestanding -c kernel.c -o kernel.o
-        to see the output:  objdump -d kernel.o
+        to see the output:  objdump -M intel -d kernel.o
         repeat on all C files
     2.ld -m elf_i386 -o ../kernel.bin -Ttext 0x1000 kernel.o --oformat binary
         to see the output:  ndisasm -b 32 kernel.bin > check_file.tmp

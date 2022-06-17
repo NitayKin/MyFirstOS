@@ -28,10 +28,18 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) { //set specif
     descriptor->reserved       = 0;
 }
 
+void empty_func()
+{
+
+}
+
 void idt_init() { //init idt table
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
-
+    for ( uint8_t i=0;i<IDT_MAX_DESCRIPTORS - 1;++i) // set every interrupt to empty_func ( int 0x08 clock making restarts if not)
+    {
+        idt_set_descriptor(i,(void*)empty_func,0x8E);
+    }
     __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
     __asm__ volatile ("sti"); // set the interrupt flag
 }
