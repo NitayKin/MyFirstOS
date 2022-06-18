@@ -12,7 +12,7 @@ nasm main.asm -f bin -o ../boot_sect.bin
 cd ../kernel #compile kernel files
 for eachfile in $CFiles
 do
-    gcc -m32 -masm=intel -fno-pie -ffreestanding -c $eachfile -o $eachfile.o
+    gcc -m32 -masm=intel -fno-pie -ffreestanding -c -mgeneral-regs-only $eachfile -o $eachfile.o
 done
 
 OFiles=`find . -name "*.o" -type f` #get all o files

@@ -5,8 +5,9 @@ __asm__("call main\n\t"  // jump to main always and hang
 void main () 
 {
         idt_init();
-        for (int i=0;i<200;++i)
-        {
-                print("i am alive!",11);
-        }
+        print("inside 1",8);
+        __asm__ volatile("hlt");
+        print("inside 2",8);
+        __asm__ volatile("hlt");
+        print("inside 3",8);
 }
