@@ -7,7 +7,7 @@ void keyboard_int_func(void* x)
 {
     char kb_char;
     __asm__ volatile ("in al, 0x60"); //read information from the device
-    asm volatile("mov %0, al\n\t" // move the char to local variable kb_char;
+    __asm__ volatile("mov %0, al\n\t" // move the char to local variable kb_char;
     : "=r" (kb_char)
     : );
     switch(kb_char)

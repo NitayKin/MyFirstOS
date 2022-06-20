@@ -21,4 +21,14 @@ void paging_init()
     }
     // attributes: supervisor level, read/write, present
     page_directory[0] = ((unsigned int)first_page_table) | 3;
+
+    //loads the page directory address onto the CR3 register, where the MMU will find it
+    __asm__ volatile("mov cr3, %0\n\t"
+    : 
+    : "r" (page_directory));
+
+    //enabling paging (changing 32th bit of cr0)
+    __asm__ volatile("mov eax, cr0");
+    __asm__ volatile("or eax, 0x80000000");
+    __asm__ volatile("mov cr0, eax");
 }

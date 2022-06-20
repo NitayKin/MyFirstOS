@@ -10,7 +10,7 @@ GENERAL:
     1.gcc -m32 -masm=intel -fno-pie -ffreestanding -c -mgeneral-regs-only kernel.c -o kernel.o
         to see the output:  objdump -M intel -d kernel.o
         repeat on all C files
-    2.ld -m elf_i386 -o ../kernel.bin -Ttext 0x1000 kernel.o --oformat binary
+    2.ld -m elf_i386 -o ../kernel.bin -Ttext 0xd000 kernel.o --oformat binary
         to see the output:  ndisasm -b 32 kernel.bin > check_file.tmp
         concat the names of every object files that were created on former stage - FIRST ONE SHOULD BE THE KERNEL.O!
 
