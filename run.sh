@@ -19,7 +19,7 @@ OFiles=`find . -name "*.o" -type f` #get all o files
 OFiles=${OFiles/"./kernel.c.o"/}
 OFiles="./kernel.c.o ${OFiles}" #force kernek.c.o to be first
 
-ld -m elf_i386 -o ../kernel.bin -Ttext 0x1000 $OFiles --oformat binary #link
+ld -m elf_i386 -o ../kernel.bin -Ttext 0xd000 $OFiles --oformat binary #link
 
 cd ..
 cat boot_sect.bin kernel.bin > os-image # make image
