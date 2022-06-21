@@ -3,6 +3,8 @@ GENERAL:
 (especially important in real mode)
 there is a lot of history with the architectures, so sometimes 8086/80286/80386/80486 ( history : then pentium, celeron and corei2 ) assembly wont be compatible with each other on some instructions.
 
+--------------------------------------------------------------------
+
 REAL MODE:
 first, we get into real mode ( real = memory is the real number ). 16 bit memory(extended with segments) and registers.
 the BIOS loads the first sector in memory region 0x7c00. for referencal jumping ( to labels for example), we need to tell the assembler that : [ org 0x7c00 ]
@@ -23,11 +25,15 @@ and we calculate it as follows:
 real address: segment*16+offset (shift 4 the segment and add offset).
 important! some instructions use ES implicity!
 
+--------------------------------------------------------------------
+
 PROTECTED MODE:
 32bit environment (which means memory 32 and registers 32), suitable for c compilation.
 no bios anymore. new segment registers fs and gs. gst and segment code protection.
 here start the GDT -Global descriptor table - which is a table saving the base and offset of code\data segments. now, the segment registers will hold the offest in THE GDT TABLE for their apripriate role.
 we pass the gdt_descriptor to tthe cpu - which is just a struct holding the start address of the gdt and its length.
+
+--------------------------------------------------------------------
 
 INTERRUPTS(idt table):
 There are 3 sources or types of interrupts:
@@ -40,11 +46,22 @@ the function that being called in response to interrupt is called ISR = interrup
 IRQs 0 to 7 are set to interrupts 08h to 0Fh, and IRQs 8 to 15 are set to interrupts 70h to 77h.
 The OS is supposed to handle the interrupt by talking to the X, via in and out instructions (which goes via the PIC).
 
+When IRET is executed, it expects the stack to have the following (the HW put them on stack when interrupt generated):
+SS
+ESP
+EFLAGS
+CS
+EIP
+
+--------------------------------------------------------------------
+
 MEMORY MANAGMENT(segmentation/paging):
 How it works?
 So, to access a memory, first the program needs to access a segment. To do this a segment selector is loaded into a segment register and then a Global or Local Descriptor table (depending of field on the segment selector). This is the reason of the fully memory address be SEGMENT REGISTER: ADDRESS , like CS:ADDRESS -> 001B:0044BF7A. Now the OS goes to the G/LDT and (using the index field of the segment selector) finds the segment descriptor of the address trying to access. Then it checks if the segment if present, the protection and if everything is ok it goes to the address stated on the “base field” (of the descriptor) + the address offset . If paging is not enabled, the system goes directly into the real memory, but with paging on the address is treated as a virtual address and it goes to the Page directory. The base address + the offset are called Linear Address and will be interpreted as 3 fields: Directory+Page+offset. So on the Directory page, it will search for the directory entry specified on the “directory” field of the linear address, this entry points to the page table and the field “page” of the linear address is used to find the page, this entry points to a frame page and the offset is used to find the exactly address that the program want to access.
 
 Modern OSes "do not use" segmentation. Its in quotes because they use 4 segments: Kernel Code Segment, Kernel Data Segment, User Code Segment and User Data Segment. What does it means is that all user's processes have the same code and data segments (so the same segment selector). The segments only change when going from user to kernel. So, all the path explained on the section 3.3. occurs, but they use the same segments and, since the page tables are individual per process, a page fault is difficult to happen.
+
+--------------------------------------------------------------------
 
 USER\KERNEL:
 becuase we know CS ( and the rest segment register ) are always upped by 0x08 ( becuase gdt is alligned that way ), we can utilize the 3 lsb bits for:
@@ -56,3 +73,8 @@ Wait, what? Remember that a segment selector is just an offset into the GDT. So,
 The RPL is stored in the low two bits of the segment selector. So, if our segment selector is 0x8, the RPL is 0. If its 0xb (0x8 but with first two bits set, binary 1011 instead of 1000) the RPL is 3. This is required; this is how our software can switch to user mode.
 CPL:
 The Current Protection Level (CPL) is the protection level of the currently executing program. The CPL is stored in bits 0 and 1 of SS and CS.
+
+--------------------------------------------------------------------
+
+TSS:
+The system use tss only when switching in user-mode to kernel transition. (Via interrupts for example)
