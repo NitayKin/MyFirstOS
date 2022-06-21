@@ -8,6 +8,7 @@ __asm__("call main\n\t"  // jump to main always and hang
 
 void main () 
 {
-        idt_init();
-        paging_init();
+        idt_init(); //idt initialization
+        paging_init(); //paging initizalization
+        #include "enter_user_mode.inc" //entering user mode
 }

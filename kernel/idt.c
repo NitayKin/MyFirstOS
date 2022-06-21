@@ -24,10 +24,10 @@ void idt_init() { //init idt table
 
     for ( uint8_t i=0;i<IDT_MAX_DESCRIPTORS - 1;++i) // set every interrupt to empty_func ( int 0x08 clock making restarts if not)
     {
-        idt_set_descriptor(i,(void*)empty_int_func,0x8E); // intterupt number i will run function empty_func.
+        idt_set_descriptor(i,(void*)empty_int_func,0xEE); // intterupt number i will run function empty_func.
     }
-    idt_set_descriptor(0x8,(void*)timer_int_func,0x8E); // int 0x08 timer
-    idt_set_descriptor(0x9,(void*)keyboard_int_func,0x8E); // int 0x09 keyboard
+    idt_set_descriptor(0x8,(void*)timer_int_func,0xEE); // int 0x08 timer
+    idt_set_descriptor(0x9,(void*)keyboard_int_func,0xEE); // int 0x09 keyboard
 
 
     __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
