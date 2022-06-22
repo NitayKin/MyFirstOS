@@ -1,4 +1,9 @@
 __asm__ volatile ("cli");
+__asm__ volatile ("mov ax, 0x2B");// Load the index of our TSS structure - The index is
+                     // 0x28, as it is the 5th selector and each is 8 bytes
+                     // long, but we set the bottom two bits (making 0x2B)
+                     // so that it has an RPL of 3, not zero.
+__asm__ volatile ("ltr ax"); //Load 0x2B into the task state register.
 __asm__ volatile ("mov ax, 0x23");	// user mode data selector is 0x20 (GDT entry 3). Also sets RPL to 3
 __asm__ volatile ("mov ds, ax");
 __asm__ volatile ("mov es, ax");

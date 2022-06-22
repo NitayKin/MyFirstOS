@@ -76,5 +76,8 @@ The Current Protection Level (CPL) is the protection level of the currently exec
 
 --------------------------------------------------------------------
 
-TSS:
-The system use tss only when switching in user-mode to kernel transition. (Via interrupts for example)
+TSS(task state segment):
+The X86 architecture has support for hardware-assisted task switching by way of a list of Task State Segments (TSS). In this tutorial set we have (like BSD, linux and most x86 operating systems) decided against using it and opted instead for a software based solution. The main reason for this is that hardware task switching is actually not much faster than software, and software task switching is far more portable between platforms.
+With that said, the way the x86 architecture is designed we have no choice but to use at least one TSS. This is because when a program in user mode (ring 3) executes a system call (software interrupt) the processor automatically looks in the current TSS and sets the stack segment (SS) and stack pointer (ESP) to what it finds in the SS0 and ESP0 fields ('0' because it's switching to ring 0) - in essence this switches from the user's stack to your kernel stack.
+the TSS also resides in the GDT table.
+
