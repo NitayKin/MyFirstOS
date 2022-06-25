@@ -15,6 +15,7 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) { //set specif
 
 void empty_int_func(void* x)
 {
+    print("im inside an interrupt",23);
 }
 
 
