@@ -68,9 +68,61 @@ Paging is achieved through the use of the Memory Management Unit (MMU). On the x
 Both tables contain 1024 4-byte entries, making them 4 KiB each. In the page directory, each entry points to a page table. In the page table, each entry points to a 4 KiB physical page frame. Additionally, each entry has bits controlling access protection and caching features of the structure to which it points. 
 Translation of a virtual address into a physical address first involves dividing the virtual address into three parts: the most significant 10 bits (bits 22-31) specify the index of the page directory entry, the next 10 bits (bits 12-21) specify the index of the page table entry, and the least significant 12 bits (bits 0-11) specify the page offset.
 
-(bit 2)U/S, the 'User/Supervisor' bit, controls access to the page based on privilege level. If the bit is set, then the page may be accessed by all; if the bit is not set, however, only the supervisor can access it. For a page directory entry, the user bit controls access to all the pages referenced by the page directory entry. Therefore if you wish to make a page a user page, you must set the user bit in the relevant page directory entry as well as the page table entry.
-(bit 1)R/W, the 'Read/Write' permissions flag. If the bit is set, the page is read/write. Otherwise when it is not set, the page is read-only. The WP bit in CR0 determines if this is only applied to userland, always giving the kernel write access (the default) or both userland and the kernel (see Intel Manuals 3A 2-20).
-(bit 0)P, or 'Present'. If the bit is set, the page is actually in physical memory at the moment. For example, when a page is swapped out, it is not in physical memory and therefore not 'Present'. If a page is called, but not present, a page fault will occur, and the OS should handle it. (Page Fault interrupt.)
+Page Table Entry (PTE):
+    Bit 0 (P): Present flag
+        0: Page is not in memory
+        1: Page is present (in memory)
+    Bit 1 (R/W): Read/Write flag
+        0: Page is read only
+        1: Page is writable
+    Bit 2 (U/S):User mode/Supervisor mode flag
+        0: Page is kernel (supervisor) mode
+        1: Page is user mode. Cannot read or write supervisor pages
+    Bits 3-4 (RSVD): Reserved by Intel
+    Bit 5 (A): Access flag. Set by processor
+        0: Page has not been accessed
+        1: Page has been accessed
+    Bit 6 (D): Dirty flag. Set by processor
+        0: Page has not been written to
+        1: Page has been written to
+    Bits 7-8 (RSVD): Reserved
+    Bits 9-11 (AVAIL): Available for use
+    Bits 12-31 (FRAME): Frame address - this page table manages the FRAME*4kb physical memory location ( for example, 0x00000 means 0-4kb physical memory,0x00001 means 4kb-8kb).
+page table has 1024 of those entries, and therefor can rule 4MB (1024*4KB = 4MB).
+
+Page Directory Entry:
+    Bit 0 (P): Present flag
+        0: Page table is not in memory
+        1: Page table is present (in memory)
+    Bit 1 (R/W): Read/Write flag
+        0: Page table is read only
+        1: Page table is writable
+    Bit 2 (U/S):User mode/Supervisor mode flag
+        0: Page table is kernel (supervisor) mode
+        1: Page table is user mode. Cannot read or write supervisor pages
+    Bit 3 (PWT):Write-through flag
+        0: Write back caching is enabled
+        1: Write through caching is enabled
+    Bit 4 (PCD):Cache disabled
+        0: Page table will not be cached
+        1: Page table will be cached
+    Bit 5 (A): Access flag. Set by processor
+        0: Page has not been accessed
+        1: Page has been accessed
+    Bit 6 (D): Reserved by Intel
+    Bit 7 (PS): Page Size
+        0: 4 KB pages
+        1: 4 MB pages
+    Bit 8 (G): Global Page (Ignored)
+    Bits 9-11 (AVAIL): Available for use
+    Bits 12-31 (FRAME): Page Table Base address - the address of the page table this directory entry manages.
+page table has 1024 of those entries, and therefor can rule 1024 page tables, ranging all 4GB of memory ( 1024*4MG = 4GB ).
+
+This is the format of a x86 virtual address:
+
+AAAAAAAAAA         BBBBBBBBBB        CCCCCCCCCCCC
+directory index    page table index  offset into page
+
 
 --------------------------------------------------------------------
 

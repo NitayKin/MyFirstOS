@@ -7,6 +7,6 @@ extern char* g_video_memory;
 
 void clear_screen();
 void print(char*, int);
-
+void print_hex(char*, int);
 
 #endif
