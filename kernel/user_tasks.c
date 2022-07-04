@@ -2,13 +2,13 @@
 void first_task()
 {
     while(1)
-        print("o",1);
+        print("a",1);
     delete_task();
 }
 
 void second_task()
 {
     while(1)
-        print("oral",4);
+        print("b",4);
     delete_task();
 }
