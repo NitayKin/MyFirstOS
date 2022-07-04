@@ -1,4 +1,3 @@
-#include <stdint.h> //for type definitions
 #include "print.h"
 
 char* g_video_memory = ( char *) 0xb8000; //mmio of screen

@@ -1,6 +1,6 @@
 #include "paging.h"
-uint32_t* page_directory __attribute__((aligned(4096)))= (uint32_t*)0x900000; // page directory location
-uint32_t* page_table __attribute__((aligned(4096)))= (uint32_t*)0xa00000; // page tables(4096 bytes each) location
+uint32_t* page_directory __attribute__((aligned(4096)))= (uint32_t*)PAGE_DIRECTORY_MEMORY_LOCATION; // page directory location
+uint32_t* page_table __attribute__((aligned(4096)))= (uint32_t*)PAGE_TABLES_MEMORY_LOCATION; // page tables(4096 bytes each) location
 
 void paging_init()
 {

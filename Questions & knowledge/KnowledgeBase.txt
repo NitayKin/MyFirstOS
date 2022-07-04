@@ -46,6 +46,8 @@ the function that being called in response to interrupt is called ISR = interrup
 IRQs 0 to 7 are set to interrupts 08h to 0Fh, and IRQs 8 to 15 are set to interrupts 70h to 77h.
 The OS is supposed to handle the interrupt by talking to the X, via in and out instructions (which goes via the PIC).
 
+In protected mode, the IRQs 0 to 7 conflict with the CPU exception which are reserved by Intel up until 0x1F. (It was an IBM design mistake.)
+
 When IRET is executed, it expects the stack to have the following (the HW put them on stack when interrupt generated):
 SS
 ESP

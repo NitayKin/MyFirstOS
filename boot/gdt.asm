@@ -50,7 +50,7 @@ gdt_end: ; for gdt length calculation
 
 tss_descriptor: ; workaround for tss bullshit.
 dd 0;// The previous TSS - if we used hardware task switching this would form a linked list.
-dd 0x20000000; // The stack pointer to load when we change to kernel mode.
+dd 0x50000000; // The stack pointer to load when we change to kernel mode.
 dd 0x10; // The stack segment to load when we change to kernel mode.
 dd 0; // Unused...
 dd 0

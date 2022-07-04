@@ -1,5 +1,6 @@
 #ifndef print_header
 #define print_header
+#include <stdint.h> //for type definitions
 
 #define MAX_VIDEO_MEM 4000
 
