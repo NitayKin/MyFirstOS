@@ -7,9 +7,8 @@ QUestions:
 
 Answer:
 1.  becuase we use bh which only has 8 bits.
-2.  we load(ed) our kernel in 0x1000.
-    remember! the 0x200 first bytes are THE BOOT SECTOR, therefor every reference to memory should be 0x200-0x1000 (-0xe00) where it should be.
-    in code we see that the memory is 0x4000 = WHICH MEANS IT IS 0X3200 IN THE OS IMAGE.
+2.  we load our kernel in 0xD000.
+    remember! the 0x200 first bytes are THE BOOT SECTOR, therefor every reference to memory should be 0x200-0xD000 (-0xCE00) where it should be.
     only relevant to not run-time initialized variables!
 3.  need to add to function decleration __attribute__(interrupt) ( bcs in interrupt we push all registers, and also with iret not normal ret).
     in adition, need to end with epiloge :

@@ -15,14 +15,27 @@ void print(char* word, int length) //printing string on screen
     for(int i=0;i<length;++i)
     {
         if ( ((uint32_t)g_video_memory - (uint32_t)MAX_VIDEO_MEM) == (uint32_t)0xb8000) //return back up
+        {
             g_video_memory = ( char *) 0xb8000;
+            clear_screen();
+        }
         * g_video_memory++ = *((char*)word);
         * g_video_memory++ = 0x0f;
         word++;
     }
 }
+
+void delete_char() //deleting 1 char from screen
+{
+    * g_video_memory-- = 0x0f;
+    * g_video_memory-- = 0x00;
+}
+
+
 void print_hex(char* word, int length) //printing string on screen
 {
+    if(length == 4) // if int32(4 bytes) = we want to print backwards. (little endian)
+        word += length-1;
     for(int i=0;i<length;++i)
     {
         char second_hex = (uint8_t)((uint8_t)(*(word)>>4)&0x0f);
@@ -164,6 +177,9 @@ void print_hex(char* word, int length) //printing string on screen
         default:
             break;
         }
-        word++;
+        if(length == 4) // if int32(4 bytes) = we want to print backwards. (little endian)
+            word--;
+        else
+            word++;
     }
 }

@@ -1,9 +1,12 @@
 #include "tasks.h"
 
 
-TaskDescription tasks[256] = {[0 ... 255] = {0,0,0,0,0}};
+TaskDescription tasks[256] = {[0 ... 255] = {0,0,0,0,0,0,0,0}};
 uint8_t total_tasks = 0;
-uint8_t currently_running_task_id = 0;
+uint8_t currently_running_task_id = 230;
+
+uint32_t check = 0;
+
 
 void create_task(void* task_address)
 {
@@ -12,10 +15,15 @@ void create_task(void* task_address)
         if(tasks[i].alive == false)
         {
             tasks[i].alive = true;
-            tasks[i].ebp = (uint32_t)(USER_STACK_MEMORY_LOCATION + ((0x3000) *  i)); // every task gets 0x3000 stack space.
-            tasks[i].esp = (uint32_t)(USER_STACK_MEMORY_LOCATION + ((0x3000) *  i)); // every task gets 0x3000 stack space.
-            tasks[i].eip = (uint32_t*)task_address;
-            tasks[i].id = total_tasks++;
+            tasks[i].ebp = (uint32_t)(USER_STACK_MEMORY_LOCATION + (uint32_t)((0x3000) *  i)); // every task gets 0x3000 stack space.
+            tasks[i].esp = (uint32_t)(USER_STACK_MEMORY_LOCATION + (uint32_t)((0x3000) *  i)); // every task gets 0x3000 stack space.
+            tasks[i].eip = (uint32_t)task_address;
+            tasks[i].eax = (uint32_t)0x0;
+            tasks[i].ecx = (uint32_t)0x0;
+            tasks[i].edx = (uint32_t)0x0;
+            tasks[i].eflags = (uint32_t)0x202;
+            tasks[i].id = i;
+            total_tasks++;
             break;
         }
     }
@@ -24,37 +32,26 @@ void create_task(void* task_address)
 
 void delete_task()
 {
-    uint32_t current_esp;
-    __asm__ volatile("mov %0, esp\n\t" // move current esp location to local variable kb_char;
-    : "=r" (current_esp)
-    : );
-    for(int i=0;i<256;++i) // search for the appropriate task based on the stack placement in memory
-    {
-        if( (tasks[i].esp>=current_esp) &&(current_esp>=tasks[i].esp - 0x3000) && (tasks[i].alive == true)) // esp in the task memory location - this is the apropriate task . zero it.
-        {
-            tasks[i].alive = false;
-            tasks[i].ebp = 0;
-            tasks[i].esp = 0;
-            tasks[i].eip = 0;
-            tasks[i].id = 0;
-            total_tasks--;
-            break;
-        }
-    }
+    tasks[currently_running_task_id].alive = false;
+    tasks[currently_running_task_id].ebp = 0;
+    tasks[currently_running_task_id].esp = 0;
+    tasks[currently_running_task_id].eip = 0;
+    tasks[currently_running_task_id].eax = (uint32_t)0x0;
+    tasks[currently_running_task_id].ecx = (uint32_t)0x0;
+    tasks[currently_running_task_id].edx = (uint32_t)0x0;
+    tasks[currently_running_task_id].eflags = (uint32_t)0x0;
+    tasks[currently_running_task_id].id = 0;
+    total_tasks--;
 }
 
 void get_task_by_id(TaskDescription* td,uint8_t id)
 {
-    for(int i=0;i<256;++i)
+    if(tasks[id].alive==true) // the task is alive
     {
-        if(tasks[i].id==id) // found the task
-        {
-            td->ebp = tasks[i].ebp;
-            td->esp = tasks[i].esp;
-            td->eip = tasks[i].eip;
-            td->id = tasks[i].id;
-            break;
-        }
+        td->ebp = tasks[id].ebp;
+        td->esp = tasks[id].esp;
+        td->eip = tasks[id].eip;
+        td->id = tasks[id].id;
     }
 }
 
