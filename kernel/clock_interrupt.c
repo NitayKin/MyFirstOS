@@ -29,9 +29,9 @@ void timer_int_func(void* x)
         ticks = 0; // reset watcher
 
         //locals ( pushed inside the function itself the registers of last task ). getting POP-ed at the end.
-        __asm__ volatile ("mov %0, [ebp-0x0c]":"=r" (last_eax)); // eax
-        __asm__ volatile ("mov %0, [ebp-0x08]":"=r" (last_edx)); // edx
-        __asm__ volatile ("mov %0, [ebp-0x04]":"=r" (last_ecx)); // ecx
+        __asm__ volatile ("mov %0, [ebp-0x0c]":"=r" (last_eax)); // ebp-0x0c - the eax of last function
+        __asm__ volatile ("mov %0, [ebp-0x08]":"=r" (last_edx)); // ebp-0x08 - the edx of last function
+        __asm__ volatile ("mov %0, [ebp-0x04]":"=r" (last_ecx)); // ebp-0x04 - the ecx of last function
 
         //the ebp - also pushed by the function itself. getting POP-ed at the end.
         __asm__ volatile ("mov %0, [ebp+0x00]":"=r" (last_ebp)); // ebp+0x00 - the ebp of last function
@@ -76,9 +76,9 @@ void timer_int_func(void* x)
         __asm__ volatile ("mov es, ax");
         __asm__ volatile ("mov fs, ax");
         __asm__ volatile ("mov gs, ax");
-        __asm__ volatile ("mov eax, %0"::"r" (tasks[currently_running_task_id].eax));
-        __asm__ volatile ("mov ecx, %0"::"r" (tasks[currently_running_task_id].ecx));
-        __asm__ volatile ("mov edx, %0"::"r" (tasks[currently_running_task_id].edx));
+        __asm__ volatile ("mov [ebp-0x0c], %0"::"r" (tasks[currently_running_task_id].eax)); // ebp-0x0c - the eax of chosen task
+        __asm__ volatile ("mov [ebp-0x08], %0"::"r" (tasks[currently_running_task_id].ecx)); // ebp-0x08 - the edx of chosen task
+        __asm__ volatile ("mov [ebp-0x04], %0"::"r" (tasks[currently_running_task_id].edx)); // ebp-0x04 - the ecx of chosen task
         __asm__ volatile ("mov [ebp+0x00], %0"::"r" (tasks[currently_running_task_id].ebp)); // ebp+0x00 - the ebp of chosen task
         __asm__ volatile ("mov [ebp+0x04], %0"::"r" (tasks[currently_running_task_id].eip)); // ebp+0x04 - the eip of chosen task
         __asm__ volatile ("mov [ebp+0x0c], %0"::"r" (tasks[currently_running_task_id].eflags)); // ebp+0x0c - the eflags of chosen task

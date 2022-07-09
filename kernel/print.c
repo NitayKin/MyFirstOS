@@ -1,7 +1,7 @@
 #include "print.h"
 
 char* g_video_memory = ( char *) 0xb8000; //mmio of screen
-void clear_screen()
+void clear_screen() 
 {
     for(unsigned int i = 0xb8000;i<(0xb8000 + 4000);)
     {

@@ -6,7 +6,9 @@
 #include "tasks.h"
 #include "auxility.h"
 
+void empty_task();
 void first_task();
 void second_task();
+void third_task();
 
 #endif

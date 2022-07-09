@@ -6,8 +6,9 @@
 
 extern char* g_video_memory;
 
-void clear_screen();
-void print(char*, int);
-void print_hex(char*, int);
+
+void clear_screen();// should be an interrupt!
+void print(char*, int);// should be an interrupt!
+void print_hex(char*, int);// should be an interrupt!
 
 #endif

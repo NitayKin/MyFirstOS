@@ -7,10 +7,23 @@ uint8_t currently_running_task_id = 230;
 
 uint32_t check = 0;
 
+void create_dummy_task(void* task_address)
+{
+        tasks[0].alive = true;
+        tasks[0].ebp = (uint32_t)(USER_STACK_MEMORY_LOCATION + (uint32_t)((0x3000))); // every task gets 0x3000 stack space.
+        tasks[0].esp = (uint32_t)(USER_STACK_MEMORY_LOCATION + (uint32_t)((0x3000))); // every task gets 0x3000 stack space.
+        tasks[0].eip = (uint32_t)task_address;
+        tasks[0].eax = (uint32_t)0x0;
+        tasks[0].ecx = (uint32_t)0x0;
+        tasks[0].edx = (uint32_t)0x0;
+        tasks[0].eflags = (uint32_t)0x202;
+        tasks[0].id = 0;
+        total_tasks++;
+}
 
 void create_task(void* task_address)
 {
-    for(int i=0;i<256;++i)
+    for(int i=1;i<256;++i)
     {
         if(tasks[i].alive == false)
         {
@@ -42,6 +55,7 @@ void delete_task()
     tasks[currently_running_task_id].eflags = (uint32_t)0x0;
     tasks[currently_running_task_id].id = 0;
     total_tasks--;
+    ticks = 20;
 }
 
 void get_task_by_id(TaskDescription* td,uint8_t id)

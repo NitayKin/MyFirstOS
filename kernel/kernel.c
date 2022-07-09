@@ -14,6 +14,8 @@ void main ()
         paging_init(); //paging initizalization
         #include "enter_user_mode.inc" //entering user mode ( loading TSS too )
         clear_screen();
-        create_task(first_task);
+        create_dummy_task(empty_task);// to fix first task problems ( this task terminates itself fast)
         create_task(second_task);
+        create_task(first_task);
+        while(1){}
 }

@@ -4,13 +4,7 @@ void scheduler()
 {
     if (total_tasks > 0)
     {
-        for(int i=0;i<256;++i) // search for the next task to run
-        {
-            if( (i != currently_running_task_id) && (tasks[i].alive==true))
-            {
-                currently_running_task_id = i;
-                break;
-            }
-        }
+        if(tasks[++currently_running_task_id].alive != true) // simple - just go one by one and return to 0 if finished
+            currently_running_task_id=1;
     }
 }
