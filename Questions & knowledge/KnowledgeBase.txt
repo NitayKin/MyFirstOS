@@ -89,8 +89,10 @@ Page Table Entry (PTE):
         1: Page has been written to
     Bits 7-8 (RSVD): Reserved
     Bits 9-11 (AVAIL): Available for use
-    Bits 12-31 (FRAME): Frame address - this page table manages the FRAME*4kb physical memory location ( for example, 0x00000 means 0-4kb physical memory,0x00001 means 4kb-8kb).
-page table has 1024 of those entries, and therefor can rule 4MB (1024*4KB = 4MB).
+    Bits 12-31 (FRAME): Frame address - this page entry manages the (FRAME<<12) - (FRAME<<12)+4KB location of physical memory.( in your head just zero the other 12 bits)
+
+Page Table:
+    table with 1024 PTEs, which means it spans 4MB of memory. ( its size is exactly 0x1000 )
 
 Page Directory Entry:
     Bit 0 (P): Present flag
@@ -117,8 +119,10 @@ Page Directory Entry:
         1: 4 MB pages
     Bit 8 (G): Global Page (Ignored)
     Bits 9-11 (AVAIL): Available for use
-    Bits 12-31 (FRAME): Page Table Base address - the address of the page table this directory entry manages.
-page table has 1024 of those entries, and therefor can rule 1024 page tables, ranging all 4GB of memory ( 1024*4MG = 4GB ).
+    Bits 12-31 (FRAME): Page Table Base address - FRAME<<12 = location of page table it manages.
+
+Page Directory:
+    Directory with 1024 PDE, each of which points to 1 page table ( which each of which points to 4MB memory)
 
 This is the format of a x86 virtual address:
 

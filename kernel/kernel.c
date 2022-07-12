@@ -10,12 +10,12 @@ __asm__("call main\n\t"  // jump to main always and hang
 
 void main () 
 {
+        clear_screen();
         idt_init(); //idt initialization
         paging_init(); //paging initizalization
         #include "enter_user_mode.inc" //entering user mode ( loading TSS too )
-        clear_screen();
-        create_dummy_task(empty_task);// to fix first task problems ( this task terminates itself fast)
-        create_task(second_task);
+        create_task(third_task);
         create_task(first_task);
+        create_task(second_task);
         while(1){}
 }

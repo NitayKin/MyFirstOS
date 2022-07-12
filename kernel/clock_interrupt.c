@@ -52,20 +52,6 @@ void timer_int_func(void* x)
         tasks[currently_running_task_id].ecx = (uint32_t)last_ecx;
         tasks[currently_running_task_id].edx = (uint32_t)last_edx;
 
-        PRINT_EBP();
-        print("---",3);
-        print_hex(&last_ebp,4);
-        print("---",3);
-        print_hex(&last_eip,4);
-        print("---",3);
-        print_hex(&last_cs,4);
-        print("---",3);
-        print_hex(&last_eflags,4);
-        print("---",3);
-        print_hex(&last_esp,4);
-        print("---",3);
-        print_hex(&last_ss,4);
-        print("----------------------------",6);
 
 
         scheduler(); // updating the current_running_task_id to point to the new chosen task
