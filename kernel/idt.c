@@ -19,7 +19,9 @@ void empty_int_func(void* x)
 }
 
 
-void idt_init() { //init idt table
+void idt_init() //init idt table
+{
+    initialize_pic();
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 
@@ -28,10 +30,41 @@ void idt_init() { //init idt table
     {
         idt_set_descriptor(i,(void*)empty_int_func,0x8E); // intterupt number i will run function empty_func.
     }
-    idt_set_descriptor(0x8,(void*)timer_int_func,0x8E); // int 0x08 timer
-    idt_set_descriptor(0x9,(void*)keyboard_int_func,0x8E); // int 0x09 keyboard
-
+    idt_set_descriptor(0x20,(void*)timer_int_func,0x8E); // int 0x08 timer
+    idt_set_descriptor(0x21,(void*)keyboard_int_func,0x8E); // int 0x09 keyboard
+    
 
     __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT
     __asm__ volatile ("sti"); // set the interrupt flag
+}
+
+void initialize_pic()
+{
+    __asm__ volatile("push eax");
+
+    __asm__ volatile("mov al, 0b00010001"); // icw1 - general
+    __asm__ volatile("out 0x20, al"); // send to PIC
+    __asm__ volatile("out 0xA0, al"); // send to secondary PIC
+
+    __asm__ volatile("mov al, 0x20"); // icw2 - IVT number selector
+    __asm__ volatile("out 0x21, al"); // send to PIC - IRQ 0..7<->0x20...0x27
+    __asm__ volatile("mov al, 0x28"); // icw2 - IVT number selector
+    __asm__ volatile("out 0xA1, al"); // send to secondary PIC - IRQ 8..15<->0x28...0x2f
+
+    __asm__ volatile("mov al, 0x4"); // icw3 - which pin to connect the secondary PIC
+    __asm__ volatile("out 0x21, al"); // 0x04 => 0100, second bit (IR line 2)
+    __asm__ volatile("mov al, 0x2"); // icw3 - to secondary
+    __asm__ volatile("out 0xA1, al");//010=> IR line 2
+    
+    __asm__ volatile("mov al, 1"); // icw4 - 80x86 mode
+    __asm__ volatile("out 0x21, al"); // primary PIC
+    __asm__ volatile("out 0xA1, al"); // secondary PIC
+
+    __asm__ volatile("mov al, 0"); // null data registers
+    __asm__ volatile("out 0x21, al"); 
+    __asm__ volatile("out 0xA1, al"); 
+
+
+
+    __asm__ volatile("pop eax");
 }

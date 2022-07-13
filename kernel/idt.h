@@ -4,8 +4,6 @@
 
 #define IDT_MAX_DESCRIPTORS 256
 
-void empty_int_func(void*) __attribute__((interrupt)); //declare interrupt functions
-void idt_init(); //init idt with empty function
 
 typedef struct {
 	uint16_t    isr_low;      // The lower 16 bits of the ISR's address
@@ -23,5 +21,9 @@ typedef struct { //IDTR structure
 __attribute__((aligned(0x10)))static idt_entry_t idt[256]; // Create an array of IDT entries; aligned for performance
 static idtr_t idtr;
 
+
+void empty_int_func(void*) __attribute__((interrupt)); //declare interrupt functions
+void idt_init(); //init idt with empty function
+void initialize_pic(); // function to initialize the PIC to send IRQ0...7 to 0x20 vector instead of 0x8.
 
 #endif

@@ -38,7 +38,7 @@ db 11110010b ; 1st flags&type flags.
 db 11001111b ; 2nd flags, Limit (bits 16-19)
 db 0x0 ; base (bits 24-31)
 
-gdt_tss: ;tss will be placed at 0xf000s
+gdt_tss: ;segment for tss structure - when an interrupt is risen
 dw 0x6c ; Limit (bits 0-15)
 dw tss_descriptor ; base (bits 0-15)
 db 0x0 ; base (bits 16-23)

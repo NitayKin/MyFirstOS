@@ -5,6 +5,7 @@
 #include "print.h"
 #include "memory_locations_defintions.h"
 
-uint32_t total_bytes_allocated; // every request gets 
+extern uint32_t total_bytes_allocated; // every request gets
+
 void* malloc(uint32_t);
 #endif
