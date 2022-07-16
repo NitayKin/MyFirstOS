@@ -19,7 +19,11 @@ GENERAL:
     to see the output:  ndisasm -b 32 os-image > check_file.tmp
 
 4) run with qemu:
-    qemu-system-x86_64 -serial stdio -m 4000 os-image
+        qemu-system-x86_64 -monitor stdio -D ./log.txt -d int -m 4000 os-image
+    -m : memory (4000 MB)
+    -d : debug (interrupts)
+    -D : logfile (log.txt)
+    -monitor : write commands ( stdio )
 
 5) delete unimportant files ( run on parent folder ):
     find . -name "*.o" -type f -delete

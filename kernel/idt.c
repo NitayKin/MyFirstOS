@@ -1,13 +1,11 @@
-#include "clock_interrupt.h"
-#include "keyboard_interrupt.h"
-#include "print.h"
 #include "idt.h"
 
-void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) { //set specific inteerrupt in idt
+void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) //set specific inteerrupt in idt
+{ 
     idt_entry_t* descriptor = &idt[vector];
  
     descriptor->isr_low        = (uint32_t)isr & 0xFFFF;
-    descriptor->kernel_cs      = 0x08; // this value can be whatever offset your kernel code selector is in your GDT
+    descriptor->kernel_cs      = 0x08; // offset kernel code selector in GDT
     descriptor->attributes     = flags;
     descriptor->isr_high       = (uint32_t)isr >> 16;
     descriptor->reserved       = 0;
@@ -18,6 +16,11 @@ void empty_int_func(void* x)
     //print("im inside an interrupt",23);
 }
 
+void gpf_int_func(void* x)
+{
+    print("GPF",3);
+}
+
 
 void idt_init() //init idt table
 {
@@ -26,12 +29,14 @@ void idt_init() //init idt table
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 
 
-    for ( uint8_t i=0;i<IDT_MAX_DESCRIPTORS - 1;++i) // set every interrupt to empty_func ( int 0x08 clock making restarts if not)
+    for ( uint8_t i=0;i<IDT_MAX_DESCRIPTORS - 1;i++ )// set every interrupt to empty_func
     {
-        idt_set_descriptor(i,(void*)empty_int_func,0x8E); // intterupt number i will run function empty_func.
+        idt_set_descriptor(i,(void*)empty_int_func,IDT_FLAG_HW); // intterupt number i will run function empty_func.
     }
-    idt_set_descriptor(0x20,(void*)timer_int_func,0x8E); // int 0x08 timer
-    idt_set_descriptor(0x21,(void*)keyboard_int_func,0x8E); // int 0x09 keyboard
+    idt_set_descriptor(0x0d,(void*)gpf_int_func,IDT_FLAG_HW); // int 0x0d GPF
+    idt_set_descriptor(0x20,(void*)timer_int_func,IDT_FLAG_HW); // int 0x20 timer
+    idt_set_descriptor(0x21,(void*)keyboard_int_func,IDT_FLAG_HW); // int 0x21 keyboard
+    idt_set_descriptor(0x80,(void*)system_call_handler,IDT_FLAG_USER); // int 0x80 system call handler
     
 
     __asm__ volatile ("lidt %0" : : "m"(idtr)); // load the new IDT

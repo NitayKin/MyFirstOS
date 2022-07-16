@@ -14,8 +14,8 @@ void main ()
         idt_init(); //idt initialization
         paging_init(); //paging initizalization
         #include "enter_user_mode.inc" //entering user mode ( loading TSS too )
-        create_task(third_task);
         create_task(first_task);
         create_task(second_task);
+        create_task(third_task);
         while(1){}
 }

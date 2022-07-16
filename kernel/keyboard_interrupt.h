@@ -1,11 +1,8 @@
-#include <stdint.h> //for type definitions
-
 #ifndef keyboard_header
 #define keyboard_header
 
-void keyboard_int_func(void*) __attribute__((interrupt));
-extern uint8_t caps_lock_on;
-
+#include <stdint.h> //for type definitions
+#include "print.h"
 
 //scancodes defines:
 #define SCANCODE_A 0x1E
@@ -37,6 +34,9 @@ extern uint8_t caps_lock_on;
 #define SCANCODE_SPACE 0x39
 #define SCANCODE_CAPSLOCK 0x3A
 #define SCANCODE_BACKSPACE 0x0E
+
+void keyboard_int_func(void*) __attribute__((interrupt));
+extern uint8_t caps_lock_on;
 
 
 #endif

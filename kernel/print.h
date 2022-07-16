@@ -8,8 +8,8 @@
 extern char* g_video_memory;
 
 
-void clear_screen();// should be an interrupt!
-void print(char*, int);// should be an interrupt!
-void print_hex(char*, int);// should be an interrupt!
+void clear_screen();// called by system call interrupt handler
+void print(char*, int);// called by system call interrupt handler
+void print_hex(char*, int);// called by system call interrupt handler
 
 #endif

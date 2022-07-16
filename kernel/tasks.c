@@ -17,6 +17,7 @@ void create_task(void* task_address)
             tasks[i].eip = (uint32_t)task_address;
             tasks[i].eax = (uint32_t)0x0;
             tasks[i].ecx = (uint32_t)0x0;
+            tasks[i].ebx = (uint32_t)0x0;
             tasks[i].edx = (uint32_t)0x0;
             tasks[i].eflags = (uint32_t)0x202;
             tasks[i].id = i;

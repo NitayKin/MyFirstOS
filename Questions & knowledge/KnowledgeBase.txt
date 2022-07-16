@@ -55,6 +55,7 @@ EFLAGS
 CS
 EIP
 
+some interrupt ( like GPF - general page fault ) also push error code ( which you can see using qemu )
 --------------------------------------------------------------------
 
 MEMORY MANAGMENT(segmentation/paging):

@@ -1,5 +1,4 @@
 #include "keyboard_interrupt.h"
-#include "print.h"
 
 uint8_t caps_lock_on = 0x00;
 

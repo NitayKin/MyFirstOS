@@ -10,6 +10,9 @@ void timer_int_func(void* x)
     __asm__ volatile ("mov al, 0x20");
     __asm__ volatile ("out 0x20, al"); //tell the PIC its over
 
+    //ebx for some reason needs special treatment
+    uint32_t last_ebx;
+
     //locals
     uint32_t last_eax;
     uint32_t last_edx;
@@ -27,7 +30,7 @@ void timer_int_func(void* x)
     if(ticks++ == 20)
     {
         ticks = 0; // reset watcher
-
+        __asm__ volatile ("mov %0, ebx":"=r" (last_ebx));
         //locals ( pushed inside the function itself the registers of last task ). getting POP-ed at the end.
         __asm__ volatile ("mov %0, [ebp-0x0c]":"=r" (last_eax)); // ebp-0x0c - the eax of last function
         __asm__ volatile ("mov %0, [ebp-0x08]":"=r" (last_edx)); // ebp-0x08 - the edx of last function
@@ -49,6 +52,7 @@ void timer_int_func(void* x)
         tasks[currently_running_task_id].esp = (uint32_t)last_esp;
         tasks[currently_running_task_id].eflags = (uint32_t)last_eflags;
         tasks[currently_running_task_id].eax = (uint32_t)last_eax;
+        tasks[currently_running_task_id].ebx = (uint32_t)last_ebx;
         tasks[currently_running_task_id].ecx = (uint32_t)last_ecx;
         tasks[currently_running_task_id].edx = (uint32_t)last_edx;
 
@@ -57,11 +61,11 @@ void timer_int_func(void* x)
         scheduler(); // updating the current_running_task_id to point to the new chosen task
 
         //put the appropriate information on the task so iret will schedule next task rpoperly.
-        __asm__ volatile ("mov ax, 0x23");	// user mode data selector is 0x20 (GDT entry 3). Also sets RPL to 3
-        __asm__ volatile ("mov ds, ax");
-        __asm__ volatile ("mov es, ax");
-        __asm__ volatile ("mov fs, ax");
-        __asm__ volatile ("mov gs, ax");
+        // __asm__ volatile ("mov ax, 0x23");//unneccesarry it seems
+        // __asm__ volatile ("mov ds, ax");
+        // __asm__ volatile ("mov es, ax");
+        // __asm__ volatile ("mov fs, ax");
+        // __asm__ volatile ("mov gs, ax");
         __asm__ volatile ("mov [ebp-0x0c], %0"::"r" (tasks[currently_running_task_id].eax)); // ebp-0x0c - the eax of chosen task
         __asm__ volatile ("mov [ebp-0x08], %0"::"r" (tasks[currently_running_task_id].ecx)); // ebp-0x08 - the edx of chosen task
         __asm__ volatile ("mov [ebp-0x04], %0"::"r" (tasks[currently_running_task_id].edx)); // ebp-0x04 - the ecx of chosen task
@@ -70,5 +74,7 @@ void timer_int_func(void* x)
         __asm__ volatile ("mov [ebp+0x0c], %0"::"r" (tasks[currently_running_task_id].eflags)); // ebp+0x0c - the eflags of chosen task
         __asm__ volatile ("mov [ebp+0x10], %0"::"r" (tasks[currently_running_task_id].esp)); // ebp + 0x10 - the esp of chosen task
         //the eax,ecx,edx and ebp all POP-ed by order, the rest we get from the iret OP.
+        
+        __asm__ volatile ("mov ebx, %0"::"r" (tasks[currently_running_task_id].ebx));//ebx for some reason needs special treatment
     }
 }

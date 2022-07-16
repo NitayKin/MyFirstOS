@@ -8,7 +8,7 @@ void first_task()
 {
     while(1)
     {
-        print("a",1);
+        print_system_call("b",1);
     }
     delete_task();
 }
@@ -17,7 +17,7 @@ void second_task()
 {
     while(1)
     {
-        print("b",1);
+        print_system_call("d",1);
     }
     delete_task();
 }
@@ -26,7 +26,7 @@ void third_task()
 {
     while(1)
     {
-        print("c",1);
+        print_system_call("f",1);
     }
     delete_task();
 }
