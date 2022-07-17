@@ -27,3 +27,4 @@ cat boot_sect.bin kernel.bin > os-image # make image
 find . -name "*.o" -type f -delete #clean
 find . -name "*.bin" -type f -delete
 find . -name "*.tmp" -type f -delete
+find . -name "log.txt" -type f -delete

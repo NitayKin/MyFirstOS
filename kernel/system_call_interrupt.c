@@ -17,5 +17,4 @@ void system_call_handler(void* x)
         default:
             break;
     }
-    __asm__ volatile ("sti");
 }
