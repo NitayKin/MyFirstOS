@@ -13,11 +13,13 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) //set specific
 
 void empty_int_func(void* x)
 {
+    __asm__ volatile ("cli");
     //print("im inside an interrupt",23);
 }
 
 void gpf_int_func(void* x)
 {
+    __asm__ volatile ("cli");
     print("GPF",3);
 }
 
