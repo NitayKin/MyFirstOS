@@ -9,7 +9,7 @@ void create_task(void* task_address)
 {
     for(int i=0;i<256;++i)
     {
-        if(tasks[i].alive == false)
+        if(tasks[i].alive == false) //find the first location of free task place
         {
             tasks[i].alive = true;
             tasks[i].ebp = (uint32_t)(USER_STACK_MEMORY_LOCATION + (uint32_t)((0x3000) *  i)); // every task gets 0x3000 stack space.

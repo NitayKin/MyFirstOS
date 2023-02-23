@@ -23,6 +23,7 @@ ld -m elf_i386 -o ../kernel.bin -Ttext 0xd000 $OFiles --oformat binary #link
 
 cd ..
 cat boot_sect.bin kernel.bin > os-image # make image
+truncate -s 16M os-image #force the image to have enouh bytes, so the read-disk instruction will not overflow.
 
 find . -name "*.o" -type f -delete #clean
 find . -name "*.bin" -type f -delete
