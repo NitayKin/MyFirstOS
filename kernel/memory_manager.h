@@ -2,8 +2,9 @@
 #define memory_manager_header
 
 #include <stdint.h> //for type definitions
+
+#include "common_defintions.h"
 #include "print.h"
-#include "memory_locations_defintions.h"
 
 extern uint32_t total_bytes_allocated; // every request gets
 

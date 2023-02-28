@@ -10,7 +10,7 @@ Answer:
 2.  we load our kernel in 0xD000.
     remember! the 0x200 first bytes are THE BOOT SECTOR, therefor every reference to memory should be 0x200-0xD000 (-0xCE00) where it should be.
     only relevant to not run-time initialized variables!
-3.  need to add to function decleration __attribute__(interrupt) ( bcs in interrupt we push all registers, and also with iret not normal ret).
+3.  need to add to function decleration __attribute__(interrupt) ( bcs in interrupt we push eflags register, and also with iret not normal ret).
     in adition, need to end with epiloge :
     __asm__ volatile ("in al, 0x60"); //read information from the device
     __asm__ volatile ("mov al, 0x20");

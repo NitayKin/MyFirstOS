@@ -17,5 +17,5 @@ void main ()
         create_task(first_task);
         create_task(second_task);
         create_task(third_task);
-        while(1){}
+        while(1){} //hang
 }

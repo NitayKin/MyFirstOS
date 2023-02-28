@@ -2,8 +2,8 @@
 #define paging_header
 #include <stdint.h> //for type definitions
 #include "print.h"
-#include "memory_locations_defintions.h"
 #include <stdbool.h> // for bool usage
+#include "common_defintions.h"
 
 #define PAGE_DIRECTORY_MASK 0b11111111110000000000000000000000
 #define PAGE_TABLE_MASK 0b00000000001111111111000000000000

@@ -2,13 +2,13 @@
 #define tasks_header
 #include <stdint.h> //for type definitions
 #include <stdbool.h> // for bool usage
-#include "memory_locations_defintions.h"
 #include "print.h"
 #include "clock_interrupt.h"
+#include "common_defintions.h"
 
 
 typedef struct{
-    bool alive;
+	task_status status;
     uint8_t id;
     uint32_t eax;
     uint32_t ebx;
