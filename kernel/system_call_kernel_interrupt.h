@@ -3,6 +3,7 @@
 
 #include <stdint.h> //for type definitions
 #include "print.h"
+#include "mutex.h"
 
 void system_call_handler(void*) __attribute__((interrupt));
 

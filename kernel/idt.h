@@ -4,7 +4,7 @@
 
 #include "clock_interrupt.h"
 #include "keyboard_interrupt.h"
-#include "system_call_interrupt.h"
+#include "system_call_kernel_interrupt.h"
 #include "print.h"
 
 #define IDT_MAX_DESCRIPTORS 256

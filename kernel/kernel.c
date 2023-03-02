@@ -2,7 +2,7 @@
 #include "idt.h"
 #include "paging.h"
 #include "tasks.h"
-#include "user_tasks.h"
+#include "../user_tasks/user_tasks.h"
 
 __asm__("call main\n\t"  // jump to main always and hang
         "jmp $");

@@ -1,10 +1,10 @@
 #include "paging.h"
-page_entry* page_table = (page_entry*)PAGE_TABLES_MEMORY_LOCATION; // page tables location
-directory_entry* directory_table = (directory_entry*)DIRECTORY_TABLE_MEMORY_LOCATION; // directory table location
+page_entry_t* page_table = (page_entry_t*)PAGE_TABLES_MEMORY_LOCATION; // page tables location
+directory_entry_t* directory_table = (directory_entry_t*)DIRECTORY_TABLE_MEMORY_LOCATION; // directory table location
 
 
 
-void create_page_entry(page_entry* page_entry_to_allocate,uint32_t physical_memory)
+void create_page_entry(page_entry_t* page_entry_to_allocate,uint32_t physical_memory)
 {
     if(physical_memory % 0x1000 == 0)
     {
@@ -17,19 +17,19 @@ void create_page_entry(page_entry* page_entry_to_allocate,uint32_t physical_memo
         page_entry_to_allocate->dirty_flag = 0;
     }
 }
-void create_page_table(page_entry* page_table_to_allocate,uint32_t physical_memory)
+void create_page_table(page_entry_t* page_table_to_allocate,uint32_t physical_memory)
 {
     if(physical_memory % 0x1000 == 0)
     {
         for(int i=0;i<1024;++i)
         {
             uint32_t current_page_memory_location = (uint32_t)(page_table_to_allocate)+i*4;
-            create_page_entry((page_entry*)current_page_memory_location,physical_memory+i*0x1000);
+            create_page_entry((page_entry_t*)current_page_memory_location,physical_memory+i*0x1000);
         }
     }
 }
 
-void create_directory_entry(directory_entry* directory_entry_to_allocate,uint32_t page_table_memory)
+void create_directory_entry(directory_entry_t* directory_entry_to_allocate,uint32_t page_table_memory)
 {
     if(page_table_memory % 0x1000 == 0)
     {
@@ -45,7 +45,7 @@ void create_directory_entry(directory_entry* directory_entry_to_allocate,uint32_
     }
 }
 
-void create_directory_table(page_entry* directory_table_to_allocate,uint32_t page_table_memory)
+void create_directory_table(page_entry_t* directory_table_to_allocate,uint32_t page_table_memory)
 {
     if(page_table_memory % 0x1000 == 0)
     {
@@ -53,7 +53,7 @@ void create_directory_table(page_entry* directory_table_to_allocate,uint32_t pag
         {
             uint32_t current_directory_memory_location = (uint32_t)(directory_table_to_allocate)+i*4;
             uint32_t current_page_table_memory = page_table_memory+i*0x1000;
-            create_directory_entry((directory_entry*)current_directory_memory_location,current_page_table_memory);
+            create_directory_entry((directory_entry_t*)current_directory_memory_location,current_page_table_memory);
         }
     }
 }
@@ -67,7 +67,7 @@ void paging_init()
     {
         uint32_t current_page_memory_location= (uint32_t)(page_table)+i*0x1000;
         uint32_t current_physical_memory_location= (uint32_t)(0x400000*i);
-        create_page_table((page_entry*)current_page_memory_location,current_physical_memory_location);
+        create_page_table((page_entry_t*)current_page_memory_location,current_physical_memory_location);
     }
 
     create_directory_table(directory_table,page_table); // create the mighty directory table

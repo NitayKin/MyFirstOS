@@ -21,5 +21,15 @@ __asm__ volatile ("Call $+5");\
 __asm__ volatile ("pop %0":"=r" (my_eip));\
 print_hex(&my_eip,4);
 
+#define PUSH_GENERAL_REG_NO_EAX()\
+__asm__ volatile ("push ebx");\
+__asm__ volatile ("push ecx");\
+__asm__ volatile ("push edx");
+
+#define POP_GENERAL_REG_NO_EAX()\
+__asm__ volatile ("pop edx");\
+__asm__ volatile ("pop ecx");\
+__asm__ volatile ("pop ebx");
+
 
 #endif

@@ -2,12 +2,7 @@
 #define user_tasks_header
 
 #include <stdint.h> //for type definitions
-#include "print.h"
-#include "tasks.h"
-#include "paging.h"
-#include "auxility.h"
-#include "memory_manager.h"
-#include "system_calls.h"
+#include "../kernel/user_system_calls.h"
 
 void empty_task();
 void first_task();

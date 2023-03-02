@@ -25,7 +25,7 @@ typedef struct{
     uint32_t available_2:1;
     uint32_t available_3:1;
     uint32_t frame:20;
-} page_entry;
+} page_entry_t;
 
 typedef struct{
     uint32_t present_flag:1;
@@ -41,16 +41,16 @@ typedef struct{
     uint32_t available_2:1;
     uint32_t available_3:1;
     uint32_t frame:20;
-} directory_entry;
+} directory_entry_t;
 
 
-extern page_entry* page_table; // size 1024*1024
-extern directory_entry* directory_table; // size 1024
+extern page_entry_t* page_table; // size 1024*1024
+extern directory_entry_t* directory_table; // size 1024
 
-void create_page_entry(page_entry*,uint32_t);
-void create_page_table(page_entry*,uint32_t);
-void create_directory_entry(directory_entry*,uint32_t);
-void create_directory_table(page_entry*,uint32_t);
+void create_page_entry(page_entry_t*,uint32_t);
+void create_page_table(page_entry_t*,uint32_t);
+void create_directory_entry(directory_entry_t*,uint32_t);
+void create_directory_table(page_entry_t*,uint32_t);
 
 void paging_init();
 uint32_t get_physical_location(uint32_t);
