@@ -12,8 +12,8 @@ typedef struct{
     uint8_t id;
     uint8_t total_mutex_wait; // how many mutexes the task waits for
     uint8_t total_mutex_own; // how many mutexes the task owns
-    uint32_t mutex_wait[3];// max 3 mutexes in waiting
-    uint32_t mutex_own[3]; // max 3 mutexes acquired
+    mutex_ptr mutex_wait[3];// max 3 mutexes in waiting
+    mutex_ptr mutex_own[3]; // max 3 mutexes acquired
     uint32_t eax;
     uint32_t ebx;
     uint32_t edx;

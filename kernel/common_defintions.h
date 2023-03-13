@@ -14,14 +14,19 @@
 #define SCREEN_MMIO_LOCATION 0xb8000
 
 //task definitions
+#define MAX_TASKS 15
 #define KERNEL_TASK_CODE 0
 typedef enum task_status{  alive=1,  waiting=2,  dead=0  } task_status;
 
 //syscalls definitions
+#define SYS_CALL_SUCCESS 0
 #define SYS_CALL_ERR 0
 #define INTERNAL_ERROR -1
+typedef int32_t status;
+
 
 //mutex definitions
 typedef uint32_t * mutex_ptr;
+#define MAX_MUTEXES_PER_TASK 3
 
 #endif

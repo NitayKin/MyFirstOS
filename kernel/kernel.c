@@ -13,7 +13,7 @@ void main ()
         clear_screen();
         idt_init(); //idt initialization
         paging_init(); //paging initizalization
-        #include "enter_user_mode.inc" //entering user mode ( loading TSS too )
+        #include "enter_user_mode.asm" //entering user mode ( loading TSS too )
         create_task(first_task);
         create_task(second_task);
         create_task(third_task);

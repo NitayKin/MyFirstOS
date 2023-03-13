@@ -1,6 +1,6 @@
 #include "clock_interrupt.h"
 
-uint8_t ticks = 0;
+uint8_t timer_ticks = 0;
 
 
 void timer_int_func(void* x)
@@ -25,9 +25,9 @@ void timer_int_func(void* x)
     uint32_t last_esp;
 
 
-    if(ticks++ == 20)
+    if(timer_ticks++ >= 20)
     {
-        ticks = 0; // reset watcher
+        timer_ticks = 0; // reset watcher
 
         //save general registers
         __asm__ volatile ("mov %0, ebx":"=r" (last_ebx));

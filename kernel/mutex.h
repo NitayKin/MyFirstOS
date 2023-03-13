@@ -16,6 +16,9 @@ extern mutex_t mutex_used[MAX_OVERALL_MUTEXES]; // list of used mutexes
 extern uint8_t total_mutexes; // how many mutexes are in use
 
 mutex_ptr create_mutex(void);
-int8_t find_free_mutex(void);
+status delete_mutex(mutex_ptr);
+status lock_mutex(mutex_ptr);
+status unlock_mutex(mutex_ptr);
+status find_free_mutex(void);
 
 #endif

@@ -29,7 +29,7 @@ void delete_task()
     tasks[currently_running_task_id].eflags = (uint32_t)0x0;
     tasks[currently_running_task_id].id = 0;
     total_tasks--;
-    ticks = 20; // so the sceduler will schedule right away at next timer interrupt.
+    timer_ticks = 20; // so the sceduler will schedule right away at next timer interrupt.
 }
 
 void get_task_by_id(task_description_t* td,uint8_t id)

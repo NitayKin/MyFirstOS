@@ -25,12 +25,18 @@ void system_call_handler(void* x)
         	break;
 
         case 3: // delete_mutex - deleting a mutex
+            __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to delete
+    		__asm__ volatile("mov ebx,%0"::"r" (delete_mutex(ebx_data))); // put the delete the mutex, and return the status
         	break;
 
         case 4: // lock_mutex - locking a mutex or waiting untill it is unlocked
+            __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to delete
+    		__asm__ volatile("mov ebx,%0"::"r" (lock_mutex(ebx_data))); // put the delete the mutex, and return the status
         	break;
 
         case 5: // unlock_mutex - unlocking a mutex
+            __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to delete
+    		__asm__ volatile("mov ebx,%0"::"r" (unlock_mutex(ebx_data))); // put the delete the mutex, and return the status
         	break;
 
         default:

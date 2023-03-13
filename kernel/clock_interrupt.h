@@ -5,7 +5,7 @@
 #include "scheduler.h"
 #include "auxility.h"
 
-extern uint8_t ticks;
+extern uint8_t timer_ticks;
 void timer_int_func(void*) __attribute__((interrupt));
 
 #endif
