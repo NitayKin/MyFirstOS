@@ -50,8 +50,6 @@ status lock_mutex(mutex_ptr mutex_memory_location)
 		tasks[currently_running_task_id].mutex_wait[total_mutex_waiting_cur_task] = mutex_memory_location; //remembering the mutex memory location to wait
 		tasks[currently_running_task_id].total_mutex_wait++;//increasing number of mutexes waiting
 		tasks[currently_running_task_id].status = waiting; // the process is now waiting for the mutex - will not conitnue after calling to the scheduler
-
-		timer_ticks = 20;// force scheduling of next task
 		return SYS_CALL_ERR;
 	}
 }
