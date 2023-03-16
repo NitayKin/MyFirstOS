@@ -9,30 +9,33 @@ mutex_ptr mutex_mem;
 void first_task()
 {
 	mutex_mem = create_mutex_system_call();
-	lock_mutex_system_call(mutex_mem);
     while(1)
     {
+    	while(lock_mutex_system_call(mutex_mem)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
     	print_system_call("abc", 3);
+    	unlock_mutex_system_call(mutex_mem); //unlocking the mutex
     }
     delete_task();
 }
 
 void second_task()
 {
-	lock_mutex_system_call(mutex_mem);
     while(1)
     {
-        print_system_call("def",3);
+    	while(lock_mutex_system_call(mutex_mem)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
+    	print_system_call("def", 3);
+    	unlock_mutex_system_call(mutex_mem); //unlocking the mutex
     }
     delete_task();
 }
 
 void third_task()
 {
-	lock_mutex_system_call(mutex_mem);
     while(1)
     {
-        print_system_call("ghi",3);
+    	while(lock_mutex_system_call(mutex_mem)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
+    	print_system_call("ghi", 3);
+    	unlock_mutex_system_call(mutex_mem); //unlocking the mutex
     }
     delete_task();
 }

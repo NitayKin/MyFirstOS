@@ -33,11 +33,10 @@ void system_call_handler(void* x)
         	status lock_mutex_status;
             __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to lock
             lock_mutex_status = lock_mutex(ebx_data); //get the lock mutex status
-            if(lock_mutex_status == SYS_CALL_ERR){ //if there is an error in the mutex aqcuire
-            	context_switch(); //switch to the next task
-            	timer_ticks = 0; //reset the timer
-            }
     		__asm__ volatile("mov ebx,%0"::"r" (lock_mutex_status)); // lock the mutex, and return the status
+            if(lock_mutex_status == SYS_CALL_ERR){ //if there is an error in the mutex aqcuire - trcontext switch, then try to acquire again
+            	context_switch(); //switch to the next task
+            }
         	break;
 
         case 5: // unlock_mutex - unlocking a mutex

@@ -20,7 +20,8 @@ typedef enum task_status{  alive=1,  waiting=2,  dead=0  } task_status;
 
 //syscalls definitions
 #define SYS_CALL_SUCCESS 0
-#define SYS_CALL_ERR 0
+#define SYS_CALL_ERR -1
+#define INTERNAL_SUCCESS 0
 #define INTERNAL_ERROR -1
 typedef int32_t status;
 
@@ -28,5 +29,6 @@ typedef int32_t status;
 //mutex definitions
 typedef uint32_t * mutex_ptr;
 #define MAX_MUTEXES_PER_TASK 3
+#define MAX_OVERALL_MUTEXES 15
 
 #endif
