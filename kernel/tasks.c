@@ -1,7 +1,7 @@
 #include "tasks.h"
 
 
-task_description_t tasks[10] = {[0 ... 9] = {0,0,{0,0,0},{0,0,0},0,0,0,0,0,0}};
+task_description_t tasks[MAX_TASKS] = {[0 ... MAX_TASKS-1] = {0,0,0,0,{0,0,0},0,0,0,0,0,0,0,0}};
 uint8_t total_tasks = 1; // always at least 1 - the kernel.
 uint8_t currently_running_task_id = KERNEL_TASK_CODE; // 0 is the kernel task.
 

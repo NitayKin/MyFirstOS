@@ -10,9 +10,8 @@
 typedef struct{
 	task_status status;
     uint8_t id;
-    uint8_t total_mutex_wait; // how many mutexes the task waits for
     uint8_t total_mutex_own; // how many mutexes the task owns
-    mutex_ptr mutex_wait[3];// max 3 mutexes in waiting
+    mutex_ptr mutex_wait;
     mutex_ptr mutex_own[3]; // max 3 mutexes acquired
     uint32_t eax;
     uint32_t ebx;
@@ -24,7 +23,7 @@ typedef struct{
     uint32_t eflags;
 } task_description_t;
 
-extern task_description_t tasks[10];
+extern task_description_t tasks[MAX_TASKS];
 extern uint8_t total_tasks;
 extern uint8_t currently_running_task_id;
 extern uint32_t check;

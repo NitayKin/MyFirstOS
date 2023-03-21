@@ -18,5 +18,6 @@ status delete_mutex(mutex_ptr);
 status lock_mutex(mutex_ptr);
 status unlock_mutex(mutex_ptr);
 status find_free_mutex_index(void);
+int8_t find_mutex_index_inside_task(mutex_ptr);
 
 #endif

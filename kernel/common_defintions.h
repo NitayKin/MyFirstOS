@@ -14,7 +14,7 @@
 #define SCREEN_MMIO_LOCATION 0xb8000
 
 //task definitions
-#define MAX_TASKS 15
+#define MAX_TASKS 10
 #define KERNEL_TASK_CODE 0
 typedef enum task_status{  alive=1,  waiting=2,  dead=0  } task_status;
 
