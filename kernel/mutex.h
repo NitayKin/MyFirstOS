@@ -7,7 +7,7 @@
 
 typedef struct{
 	mutex_ptr memory_location; // the memory location of the mutex.
-	uint32_t task_id; // the id of the owned task.
+	int8_t task_id; // the id of the owned task.(-1 means not initialized, 0 means free to lock, other number means the task is acquired it)
 }mutex_t;
 
 extern mutex_t mutex_used[MAX_OVERALL_MUTEXES]; // list of used mutexes
@@ -17,7 +17,8 @@ mutex_ptr create_mutex(void);
 status delete_mutex(mutex_ptr);
 status lock_mutex(mutex_ptr);
 status unlock_mutex(mutex_ptr);
-status find_free_mutex_index(void);
+status find_next_free_mutex_index(void);
 int8_t find_mutex_index_inside_task(mutex_ptr);
+flag_t is_mutex_ready(uint8_t,uint8_t);
 
 #endif
