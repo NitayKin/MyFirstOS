@@ -3,6 +3,7 @@
 
 #include <stdint.h> //for type definitions
 #include "../kernel/user_system_calls.h"
+#include "../kernel/common_defintions.h"
 
 void empty_task();
 void first_task();

@@ -33,6 +33,9 @@ typedef uint32_t * mutex_ptr;
 #define UNINITIALIZED_MUTEX -1
 #define INITIALIZED_MUTEX 0
 
+//timer definition
+#define TIMER_TICKS_PER_SECOND 20
+
 //global definitions
 typedef enum flag_t{FALSE=0,TRUE=1} flag_t;
 

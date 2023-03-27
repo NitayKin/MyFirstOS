@@ -5,6 +5,7 @@
 #include "print.h"
 #include "mutex.h"
 #include "scheduler.h"
+#include "timer.h"
 
 void system_call_handler(void*) __attribute__((interrupt));
 

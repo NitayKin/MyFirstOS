@@ -3,8 +3,8 @@
 #include <stdint.h> //for type definitions
 #include <stdbool.h> // for bool usage
 #include "print.h"
-#include "clock_interrupt.h"
 #include "common_defintions.h"
+#include "timer.h"
 
 
 typedef struct{
@@ -21,6 +21,7 @@ typedef struct{
     uint32_t eip;
     uint32_t ebp;
     uint32_t eflags;
+    uint32_t ticks_to_wait;
 } task_description_t;
 
 extern task_description_t tasks[MAX_TASKS];

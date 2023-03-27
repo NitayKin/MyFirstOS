@@ -72,3 +72,17 @@ status unlock_mutex_system_call(mutex_ptr mutex_memory_location)
 	POP_GENERAL_REG_NO_EAX();
 	return status;
 }
+
+void wait_timer_ticks_system_call(uint32_t ticks_to_wait)
+{
+    if(ticks_to_wait>0)
+    {
+		PUSH_GENERAL_REG_NO_EAX();
+
+		__asm__ volatile("mov edx,6"); // edx= 6 means wait interrupt
+		__asm__ volatile("mov ebx,%0"::"r" (ticks_to_wait)); // put the ticks to wait inside ebx
+		__asm__ volatile("int 0x80"); // call system call interrupt
+
+		POP_GENERAL_REG_NO_EAX();
+    }
+}

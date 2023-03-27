@@ -2,7 +2,7 @@
 #ifndef idt_header
 #define idt_header
 
-#include "clock_interrupt.h"
+#include "timer.h"
 #include "keyboard_interrupt.h"
 #include "system_call_kernel_interrupt.h"
 #include "print.h"
@@ -31,9 +31,11 @@ static idtr_t idtr;
 
 
 void empty_int_func(void*) __attribute__((interrupt)); // empty interrupt handler
+void empty_pit_func(void*) __attribute__((interrupt)); // empty interrupt handler
 void gpf_int_func(void*) __attribute__((interrupt)); // GPF interrupt handler
 
 void idt_init(); //init idt with appropriate functions
 void initialize_pic(); // function to initialize the PIC to send IRQ0...7 to 0x20 vector instead of 0x8.
+void initialize_RTC(); // initializng RTC
 
 #endif

@@ -15,9 +15,11 @@ void first_task()
     {
     	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
     	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	print_system_call("abc", 3);
+    	print_func_stub("abc", 3);
+    	wait_timer_ticks_system_call(20);
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
+    	wait_timer_ticks_system_call(5);
     }
     delete_task();
 }
@@ -28,7 +30,7 @@ void second_task()
     {
     	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
     	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	print_system_call("def", 3);
+    	print_func_stub("def", 3);
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
     	delete_mutex_system_call(mutex_mem_first);
@@ -42,10 +44,16 @@ void third_task()
     {
     	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
     	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	print_system_call("ghi", 3);
+    	print_func_stub("ghi", 3);
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
     	delete_mutex_system_call(mutex_mem_second);
     }
     delete_task();
+}
+
+
+void print_func_stub(char* string,uint32_t length)
+{
+	print_system_call(string, length);
 }

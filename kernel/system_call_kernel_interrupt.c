@@ -44,6 +44,11 @@ void system_call_handler(void* x)
     		__asm__ volatile("mov ebx,%0"::"r" (unlock_mutex(ebx_data))); // unlock the mutex, and return the status
         	break;
 
+        case 6: // wait_timer_ticks - waiting X timer ticks
+            __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to unlock
+    		wait_timer_ticks(ebx_data); // unlock the mutex, and return the status
+    		context_switch(); //switch to the next task
+        	break;
         default:
             break;
     }

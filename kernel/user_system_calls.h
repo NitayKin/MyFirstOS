@@ -10,5 +10,6 @@ void* create_mutex_system_call(void);
 int8_t delete_mutex_system_call(mutex_ptr);
 status lock_mutex_system_call(mutex_ptr);
 status unlock_mutex_system_call(mutex_ptr);
+void wait_timer_ticks_system_call(uint32_t);
 
 #endif

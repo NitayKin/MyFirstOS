@@ -1,7 +1,7 @@
 #include "tasks.h"
 
 
-task_description_t tasks[MAX_TASKS] = {[0 ... MAX_TASKS-1] = {0,0,0,0,{0,0,0},0,0,0,0,0,0,0,0}};
+task_description_t tasks[MAX_TASKS] = {[0 ... MAX_TASKS-1] = {0,0,0,0,{0,0,0},0,0,0,0,0,0,0,0,0}};
 uint8_t total_tasks = 1; // always at least 1 - the kernel.
 uint8_t currently_running_task_id = KERNEL_TASK_CODE; // 0 is the kernel task.
 
@@ -29,13 +29,12 @@ void delete_task()
     tasks[currently_running_task_id].eflags = (uint32_t)0x0;
     tasks[currently_running_task_id].id = 0;
     total_tasks--;
-    timer_ticks = 20; // so the sceduler will schedule right away at next timer interrupt.
+    timer_ticks = TIMER_TICKS_PER_SECOND; // so the sceduler will schedule right away at next timer interrupt.
 }
 
 void get_task_by_id(task_description_t* td,uint8_t id)
 {
-    if(tasks[id].status==alive) // the task is alive
-    {
+    if(tasks[id].status==alive){ // the task is alive
         td->ebp = tasks[id].ebp;
         td->esp = tasks[id].esp;
         td->eip = tasks[id].eip;
@@ -45,10 +44,8 @@ void get_task_by_id(task_description_t* td,uint8_t id)
 
 void print_tasks()
 {
-    for(int i=0;i<256;++i)
-    {
-        if(tasks[i].status==alive)
-        {
+    for(int i=0;i<MAX_TASKS;++i){
+        if(tasks[i].status==alive){
             print("new task:",9);
             print("ebp of task:",12);
             print_hex(&tasks[i].ebp,4);
