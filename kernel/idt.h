@@ -6,6 +6,7 @@
 #include "keyboard_interrupt.h"
 #include "system_call_kernel_interrupt.h"
 #include "print.h"
+#include "auxility.h"
 
 #define IDT_MAX_DESCRIPTORS 256
 #define IDT_FLAG_HW 0x8E

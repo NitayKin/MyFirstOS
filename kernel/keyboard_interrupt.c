@@ -7,9 +7,7 @@ void keyboard_int_func(void* x)
     __asm__ volatile ("cli");
     char kb_char;
     __asm__ volatile ("in al, 0x60"); //read information from the device
-    __asm__ volatile("mov %0, al\n\t" // move the char to local variable kb_char;
-    : "=r" (kb_char)
-    : );
+    __asm__ volatile("mov %0, al\n\t": "=r" (kb_char):); // move the char to local variable kb_char;
     switch(kb_char)
     {
         case SCANCODE_A:

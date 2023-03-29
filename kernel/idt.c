@@ -58,45 +58,29 @@ void idt_init() //init idt table
 
 void initialize_pic()
 {
-    __asm__ volatile("push eax");
+	out(0x20,0b00010001); // icw1 - general  send to PIC
+    out(0xA0, 0b00010001); // icw 1 - send to secondary PIC
 
-    __asm__ volatile("mov al, 0b00010001"); // icw1 - general
-    __asm__ volatile("out 0x20, al"); // send to PIC
-    __asm__ volatile("out 0xA0, al"); // send to secondary PIC
+    out(0x21, 0x20); // icw2 - IVT number selector - send to PIC - IRQ 0..7<->software interrupt 0x20...0x27
+    out(0xA1, 0x70); // icw2 - IVT number selector - send to secondary PIC - IRQ 8..15<->software interrupt 0x70...0x78
 
-    __asm__ volatile("mov al, 0x20"); // icw2 - IVT number selector
-    __asm__ volatile("out 0x21, al"); // send to PIC - IRQ 0..7<->software interrupt 0x20...0x27
-    __asm__ volatile("mov al, 0x70"); // icw2 - IVT number selector
-    __asm__ volatile("out 0xA1, al"); // send to secondary PIC - IRQ 8..15<->software interrupt 0x70...0x78
-
-    __asm__ volatile("mov al, 0x4"); // icw3 - which pin to connect the secondary PIC
-    __asm__ volatile("out 0x21, al"); // 0x04 => 0100, second bit (IR line 2)
-    __asm__ volatile("mov al, 0x2"); // icw3 - to secondary
-    __asm__ volatile("out 0xA1, al");//010=> IR line 2
+    out(0x21, 0x4); // icw3 - which pin to connect the secondary PIC - 0x04 => 0100, second bit (IR line 2)
+    out(0xA1, 0x2);// icw3 - to secondary - 010=> IR line 2
     
-    __asm__ volatile("mov al, 1"); // icw4 - 80x86 mode
-    __asm__ volatile("out 0x21, al"); // primary PIC
-    __asm__ volatile("out 0xA1, al"); // secondary PIC
+    out(0x21, 1);// icw4 - 80x86 mode - primary PIC
+    out(0xA1, 1);// icw4 - 80x86 mode - secondary PIC
 
-    __asm__ volatile("mov al, 0"); // null data registers
-    __asm__ volatile("out 0x21, al"); 
-    __asm__ volatile("out 0xA1, al"); 
-
-
-
-    __asm__ volatile("pop eax");
+    out(0x21, 0);// null data registers
+    out(0xA1, 0);// null data registers
 }
 
 void initialize_RTC(void)
 {
 	char prev;
-    __asm__ volatile("mov al, 0x8B");
-	__asm__ volatile("out 0x70, al");// set index to register A, disable NMI
+	out(0x70, 0x8B);// set index to register A, disable NMI
 	__asm__ volatile ("in al, 0x71"); //read the current value of register B
     __asm__ volatile ("mov %0,al": "=r" (prev));
     prev = prev | 0x40;
-    __asm__ volatile("mov al, 0x8B");
-	__asm__ volatile("out 0x70, al");// set index again, (read reseting)
-	__asm__ volatile ("mov al, %0"::"r" (prev));
-	__asm__ volatile("out 0x71, al");// write the previous value ORed with 0x40. This turns on bit 6 of register B
+	out(0x70, 0x8B);// set index again, (read reseting)
+	out(0x71, prev);// write the previous value ORed with 0x40. This turns on bit 6 of register B
 }
