@@ -4,15 +4,13 @@
 #include "print.h"
 #include <stdint.h> //for type definitions
 
-
+/* constraints: d means register ad, a mean al, and N means its going to be 16 bit*/
 #define out(port,value) \
-__asm__ volatile("push eax"); \
-__asm__ volatile("push edx"); \
-__asm__ volatile("mov dx, %0"::"r"((uint16_t)port)); \
-__asm__ volatile("mov al, %0"::"r"((uint8_t)value)); \
-__asm__ volatile("out dx, al"); \
-__asm__ volatile("pop edx"); \
-__asm__ volatile("pop eax");
+__asm__ volatile("out %0, %1" : : "dN"((uint16_t)(port)), "a"((uint8_t)(value)))
+
+#define in(port,return_value) \
+__asm__ volatile("in al, %0" :: "dN"((uint16_t)(port))); \
+__asm__ volatile("mov %0, al" :"=r"((uint8_t)(return_value)):);
 
 #define PRINT_ESP() \
 uint32_t my_esp;\

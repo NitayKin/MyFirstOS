@@ -4,9 +4,10 @@ uint8_t caps_lock_on = 0x00;
 
 void keyboard_int_func(void* x)
 {
+	char tmp;
     __asm__ volatile ("cli");
     char kb_char;
-    __asm__ volatile ("in al, 0x60"); //read information from the device
+    in(0x60,tmp);//read information from the device
     __asm__ volatile("mov %0, al\n\t": "=r" (kb_char):); // move the char to local variable kb_char;
     switch(kb_char)
     {
@@ -177,6 +178,5 @@ void keyboard_int_func(void* x)
         default:
             break;
     }
-    __asm__ volatile ("mov al, 0x20");
-    __asm__ volatile ("out 0x20, al");//tell the PIC its over
+    out(PIC1_COMMAND, 0x20);//tell the PIC its over
 }

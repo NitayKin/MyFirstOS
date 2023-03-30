@@ -13,6 +13,12 @@
 #define MAIN_FUNCTION_STACK_MEMORY_LOCATION 0x16000 // defined in switch_to_pm.asm
 #define SCREEN_MMIO_LOCATION 0xb8000
 
+//PIC definitions
+#define PIC1_COMMAND 0x20
+#define PIC1_DATA 0x21
+#define PIC2_COMMAND 0xA0
+#define PIC2_DATA 0xA1
+
 //task definitions
 #define MAX_TASKS 10
 #define KERNEL_TASK_CODE 0

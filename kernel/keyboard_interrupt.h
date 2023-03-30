@@ -3,6 +3,7 @@
 
 #include <stdint.h> //for type definitions
 #include "print.h"
+#include "auxility.h"
 
 //scancodes defines:
 #define SCANCODE_A 0x1E

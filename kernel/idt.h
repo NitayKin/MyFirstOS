@@ -12,6 +12,7 @@
 #define IDT_FLAG_HW 0x8E
 #define IDT_FLAG_USER 0xEE
 
+
 typedef struct 
 {
 	uint16_t    isr_low;      // The lower 16 bits of the ISR's address

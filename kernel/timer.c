@@ -5,14 +5,14 @@ uint16_t timer_ticks = 0;
 
 void timer_int_func(void* x)
 {
+	char tmp;
     __asm__ volatile ("cli");
-    __asm__ volatile ("in al, 0x60"); //read information from the device
-    __asm__ volatile ("mov al, 0x20");
-    __asm__ volatile ("out 0x20, al"); //tell the PIC its over
+    in(0x60,tmp);//read information from the device
+    out(PIC1_COMMAND, 0x20);//tell the PIC its over
+
     /*RTC - not stable, leave for now...
-    __asm__ volatile ("mov al, 0x0C");
-    __asm__ volatile ("out 0x70, al"); //select register C - (if register C is not read after an IRQ 8, then the interrupt will not happen again.)
-    __asm__ volatile ("in al, 0x71"); //throw away contents
+    out(0x70, 0x0C);//select register C - (if register C is not read after an IRQ 8, then the interrupt will not happen again.)
+    in(0x71,tmp); //throw away contents
     */
 
     decrease_global_waiting_timer_ticks(); //decreasing tasks ticks to wait globally
@@ -24,9 +24,8 @@ void timer_int_func(void* x)
     	timer_ticks = 0; // reset timer watcher
     }
     /*RTC - not stable, leave for now...
-    __asm__ volatile ("mov al, 0x20");
-    __asm__ volatile ("out 0xA0, al");
-    __asm__ volatile ("out 0x20, al");//tell the secondary PIC its over
+    out(PIC2_COMMAND, 0x20);//tell the PIC and secondary pic its over
+    out(PIC1_COMMAND, 0x20);
     */
 }
 
