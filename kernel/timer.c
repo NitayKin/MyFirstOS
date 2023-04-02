@@ -6,6 +6,7 @@ uint16_t timer_ticks = 0;
 void timer_int_func(void* x)
 {
 	char tmp;
+	context_switch_declare_variables();
     __asm__ volatile ("cli");
     in(0x60,tmp);//read information from the device
     out(PIC1_COMMAND, 0x20);//tell the PIC its over

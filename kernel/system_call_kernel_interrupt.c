@@ -6,6 +6,7 @@
  */
 void system_call_handler(void* x)
 {
+	context_switch_declare_variables();
     __asm__ volatile ("cli");
     uint32_t system_call_number; // with save edx - the
     uint32_t ebx_data; // will save ebx - data to requested function.
@@ -48,7 +49,18 @@ void system_call_handler(void* x)
             __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to unlock
     		wait_timer_ticks(ebx_data); // unlock the mutex, and return the status
     		context_switch(); //switch to the next task
+    		break;
+
+        case 7: // create_task - creating a new task
+            __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get memory location to the task we want to create
+            __asm__ volatile("mov ebx,%0"::"r"(create_task(ebx_data))); // unlock the mutex, and return the status
+    		break;
+
+        case 8: // delete task - deleting currently running task
+    		delete_task(); // delete the task
+    		context_switch(); //switch to the next task
         	break;
+
         default:
             break;
     }

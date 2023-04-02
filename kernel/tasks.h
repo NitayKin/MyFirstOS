@@ -29,10 +29,11 @@ extern uint8_t total_tasks;
 extern uint8_t currently_running_task_id;
 extern uint32_t check;
 
-void create_task(void*);// should be an interrupt!
-void delete_task();// should be an interrupt!
+status create_task(void*);// should be an interrupt!
+void delete_task(void);// should be an interrupt!
+int8_t find_empty_task_slot(void);
 void get_task_by_id(task_description_t*,uint8_t);
-void print_tasks();
+void print_tasks(void);
 void print_task_id(uint8_t);
 
 #endif

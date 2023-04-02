@@ -4,6 +4,9 @@
 #include "print.h"
 #include <stdint.h> //for type definitions
 
+void memset(char*,char,uint32_t);
+
+
 /* constraints: d means register ad, a mean al, and N means its going to be 16 bit*/
 #define out(port,value) \
 __asm__ volatile("out %0, %1" : : "dN"((uint16_t)(port)), "a"((uint8_t)(value)))

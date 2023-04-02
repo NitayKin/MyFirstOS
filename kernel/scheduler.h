@@ -12,7 +12,8 @@ return from the interrupt with the next scheduled task registers).
 first we are saving the current registers, and then calling the scheduler in order to find the next task to run.
 afterwards, we take the saved registered of the chosen task to run, and put them in the stack in order to pop them when returning from the interrupt rutine.
 */
-#define context_switch() \
+
+#define context_switch_declare_variables()\
 uint32_t last_ebx; \
 uint32_t last_eax; \
 uint32_t last_edx; \
@@ -20,7 +21,9 @@ uint32_t last_ecx; \
 uint32_t last_ebp; \
 uint32_t last_eip; \
 uint32_t last_eflags; \
-uint32_t last_esp; \
+uint32_t last_esp;
+
+#define context_switch() \
 __asm__ volatile ("mov %0, ebx":"=r" (last_ebx)); \
 __asm__ volatile ("mov %0, eax":"=r" (last_eax)); \
 __asm__ volatile ("mov %0, edx":"=r" (last_edx)); \
