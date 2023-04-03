@@ -34,6 +34,7 @@ void second_task()
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
     	delete_mutex_system_call(mutex_mem_first);
+    	delete_mutex_system_call(mutex_mem_second);
     }
     delete_task_system_call();
 }
@@ -47,9 +48,8 @@ void third_task()
     	print_func_stub("ghi", 3);
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
-    	delete_mutex_system_call(mutex_mem_second);
+        delete_task_system_call();
     }
-    delete_task_system_call();
 }
 
 

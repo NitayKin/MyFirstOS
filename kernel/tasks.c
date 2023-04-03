@@ -2,8 +2,8 @@
 
 
 task_description_t tasks[MAX_TASKS] = {[0 ... MAX_TASKS-1] = {0,0,0,0,{0,0,0},0,0,0,0,0,0,0,0,0}};
-uint8_t total_tasks = 1; // always at least 1 - the kernel.
-uint8_t currently_running_task_id = KERNEL_TASK_CODE; // 0 is the kernel task.
+uint8_t total_tasks = 1; // always at least 1 - the kernel\task which spawned from him.
+uint8_t currently_running_task_id = 0; // 0 at start is the kernel task. it will be deleted after initializing everything, and could be used by others.
 
 status create_task(void* task_address)
 {
@@ -14,7 +14,7 @@ status create_task(void* task_address)
 		tasks[next_free_task_id].esp = (uint32_t)(USER_STACK_MEMORY_LOCATION + (uint32_t)((0x3000) *  next_free_task_id)); // every task gets 0x3000 stack space.
 		tasks[next_free_task_id].eip = (uint32_t)task_address;
 		tasks[next_free_task_id].eflags = (uint32_t)0x202;
-		tasks[next_free_task_id].id = total_tasks;
+		tasks[next_free_task_id].id = next_free_task_id;
 		total_tasks++;
 		return SYS_CALL_SUCCESS;
 	}
@@ -38,12 +38,11 @@ void delete_task()
     memset(tasks[currently_running_task_id].mutex_own, 0, sizeof(mutex_ptr)*3);
     tasks[currently_running_task_id].mutex_wait = 0;
     total_tasks--;
-    timer_ticks = TIMER_TICKS_PER_SECOND; // so the sceduler will schedule right away at next timer interrupt.
 }
 
 int8_t find_empty_task_slot()
 {
-	for(uint8_t tmp_task_id=1;tmp_task_id<MAX_TASKS;++tmp_task_id){ //not starting from 0 becuase task 0 is kernel
+	for(uint8_t tmp_task_id=0;tmp_task_id<MAX_TASKS;++tmp_task_id){
 		if(tasks[tmp_task_id].status == dead){
 			return tmp_task_id;
 		}

@@ -21,7 +21,6 @@
 
 //task definitions
 #define MAX_TASKS 10
-#define KERNEL_TASK_CODE 0
 typedef enum task_status{  alive=1,  waiting=2,  dead=0  } task_status;
 
 //syscalls definitions
@@ -36,8 +35,8 @@ typedef int32_t status;
 typedef uint32_t * mutex_ptr;
 #define MAX_MUTEXES_PER_TASK 3
 #define MAX_OVERALL_MUTEXES 15
-#define UNINITIALIZED_MUTEX -1
-#define INITIALIZED_MUTEX 0
+#define UNINITIALIZED_MUTEX -2
+#define INITIALIZED_MUTEX -1
 
 //timer definition
 #define TIMER_TICKS_PER_SECOND 20

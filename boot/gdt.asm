@@ -42,13 +42,13 @@ gdt_tss: ;segment for tss structure - when an interrupt is risen placed at 0x28
 dw 0x6c ; Limit (bits 0-15)
 dw tss_descriptor ; base (bits 0-15)
 db 0x0 ; base (bits 16-23)
-db 11101001b ; 1st flags&type flags.
+db 10001001b ; 1st flags&type flags.
 db 00000000b ; 2nd flags, Limit (bits 16-19)
 db 0x0 ; base (bits 24-31)
 
 gdt_end: ; for gdt length calculation
 
-tss_descriptor: ; workaround for tss bullshit.
+tss_descriptor: ; tss
 dd 0;// The previous TSS - if we used hardware task switching this would form a linked list.
 dd 0x50000000; // The stack pointer to load when we change to kernel mode.
 dd 0x10; // The stack segment to load when we change to kernel mode.
