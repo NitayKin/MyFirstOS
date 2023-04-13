@@ -6,7 +6,11 @@
 
 ## General info
 This project is a simple Operation System for x86 architecture.  
-there are task scheduling, mutex, system calls and virtual memory implementations.
+there are task scheduling, mutex, system calls and virtual memory implementations.  
+the project hierarchy is as follows:  
+/boot - anything related to booting and the boot sector (ASM)  
+/kernel - the kernel’s startup file, kernel.c, and other kernel related code such as system calls  
+/user_tasks - the user tasks implementation, using the operation systems abilities.  
 	
 ## Technologies
 The project is written in C and assembly.  
