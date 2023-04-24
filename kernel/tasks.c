@@ -25,6 +25,7 @@ status create_task(void* task_address)
 
 void delete_task()
 {
+	release_all_task_mutexes();
     tasks[currently_running_task_id].status = dead;
     tasks[currently_running_task_id].ebp = 0;
     tasks[currently_running_task_id].esp = 0;
@@ -48,6 +49,23 @@ int8_t find_empty_task_slot()
 		}
 	}
 	return INTERNAL_ERROR;
+}
+
+void release_all_task_mutexes()
+{
+	for(uint8_t tmp_mutex_idx = 0; tmp_mutex_idx<MAX_OWNED_MUTEX_PER_TASK;++tmp_mutex_idx){ //run on all mutexes owned by the task
+		mutex_ptr tmp_mem_loc_mutex = tasks[currently_running_task_id].mutex_own[tmp_mutex_idx];
+		if(tmp_mem_loc_mutex!=0){ //if they are not zero - they are in use by this task
+			uint8_t mutex_index_inside_array = ((uint32_t)tmp_mem_loc_mutex-MUTEX_MEMORY_LOCATION)/sizeof(uint32_t); // finding the lcoation of the mutex in array
+			mutex_used[mutex_index_inside_array].task_id = INITIALIZED_MUTEX;//freeing the mutex
+			for (uint8_t tmp_task_idx = 0; tmp_task_idx<MAX_TASKS;++tmp_task_idx){
+				if (tasks[tmp_task_idx].mutex_wait == tmp_mem_loc_mutex){ //the checked task is waiting for this mutex
+					tasks[tmp_task_idx].mutex_wait = 0;
+					tasks[tmp_task_idx].status = alive;
+				}
+			}
+		}
+	}
 }
 
 

@@ -17,8 +17,9 @@ mutex_ptr create_mutex(void);
 status delete_mutex(mutex_ptr);
 status lock_mutex(mutex_ptr);
 status unlock_mutex(mutex_ptr);
-status find_next_free_mutex_index(void);
-int8_t find_mutex_index_inside_task(mutex_ptr);
+status free_mutex_index_inside_global_array(void);
+int8_t mutex_index_inside_task(mutex_ptr);
+int8_t free_mutex_index_inside_task();
 flag_t is_mutex_ready(uint8_t,uint8_t);
 
 #endif

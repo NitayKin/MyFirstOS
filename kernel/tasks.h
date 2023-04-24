@@ -5,6 +5,7 @@
 #include "print.h"
 #include "common_defintions.h"
 #include "timer.h"
+#include "mutex.h"
 
 
 typedef struct{
@@ -12,7 +13,7 @@ typedef struct{
     uint8_t id;
     uint8_t total_mutex_own; // how many mutexes the task owns
     mutex_ptr mutex_wait;
-    mutex_ptr mutex_own[3]; // max 3 mutexes acquired
+    mutex_ptr mutex_own[MAX_OWNED_MUTEX_PER_TASK]; // max 3 mutexes acquired
     uint32_t eax;
     uint32_t ebx;
     uint32_t edx;
@@ -32,6 +33,7 @@ extern uint32_t check;
 status create_task(void*);// should be an interrupt!
 void delete_task(void);// should be an interrupt!
 int8_t find_empty_task_slot(void);
+void release_all_task_mutexes(void);
 void get_task_by_id(task_description_t*,uint8_t);
 void print_tasks(void);
 void print_task_id(uint8_t);

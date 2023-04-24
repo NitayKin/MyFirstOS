@@ -20,6 +20,7 @@ void first_task()
     	print_func_stub("abc", 3);
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
+    	wait_timer_ticks_system_call(20); // waiting for 20 ticks
     }
     delete_task_system_call();
 }
@@ -30,11 +31,10 @@ void second_task()
     {
     	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
     	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	print_func_stub("def", 3);
+    	print_func_stub("ghi", 3);
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
     	delete_mutex_system_call(mutex_mem_first);
-    	delete_mutex_system_call(mutex_mem_second);
     }
     delete_task_system_call();
 }
@@ -45,10 +45,11 @@ void third_task()
     {
     	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
     	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	print_func_stub("ghi", 3);
+    	wait_timer_ticks_system_call(20); // waiting for approx 1 second
+    	print_func_stub("def", 3);
+        delete_task_system_call(); //deleting task before unlocking - behaviour check
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
     	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
-        delete_task_system_call();
     }
 }
 
