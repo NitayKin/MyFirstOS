@@ -28,6 +28,7 @@ void empty_pit_func(void* x)
 void gpf_int_func(void* x)
 {
     __asm__ volatile ("cli");
+    int y = 1/0; //cause double - triple fault and then resets.
     print("GPF",3);
 }
 
@@ -40,11 +41,7 @@ void idt_init() //init idt table
     idtr.base = (uintptr_t)&idt[0];
     idtr.limit = (uint16_t)sizeof(idt_entry_t) * IDT_MAX_DESCRIPTORS - 1;
 
-
-    for ( uint8_t i=0;i<IDT_MAX_DESCRIPTORS - 1;i++ )// set every interrupt to empty_func
-    {
-        idt_set_descriptor(i,(void*)empty_int_func,IDT_FLAG_HW); // intterupt number i will run function empty_func.
-    }
+    // set descriptors for important interrupts.
     idt_set_descriptor(0x0d,(void*)gpf_int_func,IDT_FLAG_HW); // int 0x0d GPF
     idt_set_descriptor(0x20,(void*)timer_int_func,IDT_FLAG_HW); // int 0x20 PIT
     idt_set_descriptor(0x21,(void*)keyboard_int_func,IDT_FLAG_HW); // int 0x21 keyboard

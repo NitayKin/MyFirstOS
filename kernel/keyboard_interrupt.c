@@ -173,7 +173,8 @@ void keyboard_int_func(void* x)
         case SCANCODE_CAPSLOCK:
             caps_lock_on ^= 0x01;
             break;
-        case SCANCODE_BACKSPACE:
+        case SCANCODE_BACKSPACE: // to reset the machine
+        	__asm__ volatile ("JMP 0xFFFF:0"); //GPF
             break;
         default:
             break;
