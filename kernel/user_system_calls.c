@@ -50,7 +50,6 @@ int8_t delete_mutex_system_call(mutex_ptr mutex_memory_location)
 status lock_mutex_system_call(mutex_ptr mutex_memory_location)
 {
 	status status;
-
 	PUSH_GENERAL_REG_NO_EAX();
 
 	__asm__ volatile("mov edx,4"); // edx= 4 means lock mutex system call
@@ -91,7 +90,7 @@ void wait_timer_ticks_system_call(uint32_t ticks_to_wait)
     }
 }
 
-status create_task_system_call(uint32_t mem_location)
+status create_task_system_call(uint32_t mem_location,uint8_t priority)
 {
 	status status;
 
@@ -99,6 +98,7 @@ status create_task_system_call(uint32_t mem_location)
 
 	__asm__ volatile("mov edx,7"); // edx= 7 means create task
 	__asm__ volatile("mov ebx,%0"::"r" (mem_location)); // put the memory location of the new task inside ebx
+	__asm__ volatile("mov ecx,%0"::"r" ((uint32_t)priority)); // put the priority inside ecx
 	__asm__ volatile("int 0x80"); // call system call interrupt
 	__asm__ volatile ("mov %0,ebx": "=r" (status)); // get status from the system call
 

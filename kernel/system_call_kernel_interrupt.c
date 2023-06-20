@@ -6,8 +6,8 @@
  */
 void system_call_handler(void* x)
 {
-	context_switch_declare_variables();
     __asm__ volatile ("cli");
+	context_switch_declare_variables();
     uint32_t system_call_number; // with save edx - the
     uint32_t ebx_data; // will save ebx - data to requested function.
     uint32_t ecx_data; // will save ecx - data to requested function.
@@ -34,8 +34,8 @@ void system_call_handler(void* x)
         	status lock_mutex_status;
             __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to lock
             lock_mutex_status = lock_mutex(ebx_data); //get the lock mutex status
-    		__asm__ volatile("mov ebx,%0"::"r" (lock_mutex_status)); // lock the mutex, and return the status
-            if(lock_mutex_status == SYS_CALL_ERR){ //if there is an error in the mutex aqcuire - trcontext switch, then try to acquire again
+    		__asm__ volatile("mov ebx,%0"::"r" (lock_mutex_status)); // return the status
+            if(tasks[currently_running_task_id].status == waiting){ //if current task went into waiting condition - context switch.
             	context_switch(); //switch to the next task
             }
         	break;
@@ -53,7 +53,8 @@ void system_call_handler(void* x)
 
         case 7: // create_task - creating a new task
             __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get memory location to the task we want to create
-            __asm__ volatile("mov ebx,%0"::"r"(create_task(ebx_data))); // unlock the mutex, and return the status
+        	__asm__ volatile ("mov %0,ecx": "=r" (ecx_data)); // get the last ecx - which indicates priority for created task
+            __asm__ volatile("mov ebx,%0"::"r"(create_task(ebx_data,ecx_data))); // unlock the mutex, and return the status
     		break;
 
         case 8: // delete task - deleting currently running task

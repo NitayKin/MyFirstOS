@@ -20,7 +20,9 @@
 #define PIC2_DATA 0xA1
 
 //task definitions
-#define MAX_TASKS 10
+#define MAX_USER_TASKS 9
+#define LAST_USER_TASK_ID MAX_USER_TASKS-2
+#define IDLE_TASK_ID 8
 #define MAX_OWNED_MUTEX_PER_TASK 3
 typedef enum task_status{  alive=1,  waiting=2,  dead=0  } task_status;
 

@@ -20,7 +20,7 @@ void timer_int_func(void* x)
 
     timer_ticks++; //increasing timer counter
 
-    if(timer_ticks >= TIMER_TICKS_PER_SECOND){
+    if(timer_ticks >= TIMER_TICKS_PER_SECOND || currently_running_task_id == IDLE_TASK_ID){//check for ready tasks
     	context_switch(); // calling the context switch
     	timer_ticks = 0; // reset timer watcher
     }
@@ -38,7 +38,7 @@ void wait_timer_ticks(uint32_t ticks_to_wait)
 
 void decrease_global_waiting_timer_ticks(void)
 {
-	 for(int i=0;i<MAX_TASKS;++i){
+	 for(int i=0;i<MAX_USER_TASKS;++i){
 	        if(tasks[i].ticks_to_wait>0){
 	        	tasks[i].ticks_to_wait--;
 	        	if(tasks[i].ticks_to_wait == 0)

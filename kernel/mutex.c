@@ -20,11 +20,11 @@ mutex_ptr create_mutex()
 status delete_mutex(mutex_ptr mutex_memory_location)
 {
 	uint8_t mutex_index_inside_array = ((uint32_t)mutex_memory_location-MUTEX_MEMORY_LOCATION)/sizeof(uint32_t); // finding the lcoation of the mutex in array
-	if(mutex_used[mutex_index_inside_array].task_id == INITIALIZED_MUTEX){ //can only delete if mutex isnt locked
+	if(mutex_used[mutex_index_inside_array].task_id != UNINITIALIZED_MUTEX){ //can only delete if mutex initialized
 		uint8_t mutex_index_inside_array = ((uint32_t)mutex_memory_location-MUTEX_MEMORY_LOCATION)/sizeof(uint32_t); // finding the location of the mutex in array
 		mutex_used[mutex_index_inside_array].task_id = UNINITIALIZED_MUTEX;
 		mutex_used[mutex_index_inside_array].memory_location =0;
-		for(int tmp_task_idx=0;tmp_task_idx<MAX_TASKS;tmp_task_idx++){ //releasing all the other tasks that are waiting for this mutex
+		for(int tmp_task_idx=0;tmp_task_idx<=LAST_USER_TASK_ID;tmp_task_idx++){ //releasing all the other tasks that are waiting for this mutex
 			if(tasks[tmp_task_idx].mutex_wait == mutex_memory_location){ //the checked task is waiting for this deleted mutex
 				tasks[tmp_task_idx].mutex_wait = 0;
 				tasks[tmp_task_idx].status = alive;
@@ -41,10 +41,9 @@ status lock_mutex(mutex_ptr mutex_memory_location)
 	uint8_t mutex_index_inside_array = ((uint32_t)mutex_memory_location-MUTEX_MEMORY_LOCATION)/sizeof(uint32_t); // finding the lcoation of the mutex in array
 	uint8_t total_mutex_owned_cur_task = tasks[currently_running_task_id].total_mutex_own; //the number of mutexes the current task is owning
 	uint8_t free_mutex_location = free_mutex_index_inside_task(); //finding free mutex location
-
-	if(is_mutex_ready(mutex_index_inside_array, total_mutex_owned_cur_task) == FALSE) //check mutex lockability
+	if(total_mutex_owned_cur_task==MAX_OWNED_MUTEX_PER_TASK) //max 3 mutexes per task
 		return SYS_CALL_ERR;
-	if(mutex_used[mutex_index_inside_array].task_id == UNINITIALIZED_MUTEX)//mutex is not initialized - not need to lock/wait for it.
+	if(mutex_used[mutex_index_inside_array].task_id == UNINITIALIZED_MUTEX || mutex_used[mutex_index_inside_array].task_id == currently_running_task_id)//mutex is not initialized/locked by same process - not need to lock/wait for it.
 		return SYS_CALL_SUCCESS;
 
 	if(mutex_used[mutex_index_inside_array].task_id == INITIALIZED_MUTEX){ // free mutex
@@ -72,7 +71,7 @@ status unlock_mutex(mutex_ptr mutex_memory_location)
 		mutex_used[mutex_index_inside_array].task_id = INITIALIZED_MUTEX;
 		tasks[currently_running_task_id].mutex_own[mutex_index_task] = 0; //zeroing the former owned mutex
 		tasks[currently_running_task_id].total_mutex_own--;
-		for(int tmp_task_idx=0;tmp_task_idx<MAX_TASKS;tmp_task_idx++){ //releasing all the other tasks that are waiting for the mutex
+		for(int tmp_task_idx=0;tmp_task_idx<=LAST_USER_TASK_ID;tmp_task_idx++){ //releasing all the other tasks that are waiting for the mutex
 			if(tasks[tmp_task_idx].mutex_wait == mutex_memory_location){ //the checked task is waiting for this freed mutex
 				tasks[tmp_task_idx].mutex_wait = 0;
 				tasks[tmp_task_idx].status = alive;
@@ -89,7 +88,7 @@ status free_mutex_index_inside_global_array()
 	if(total_mutexes == MAX_OVERALL_MUTEXES)
 		return INTERNAL_ERROR; //max mutexes used in entire machine
 	for (int8_t index=0;index<MAX_OVERALL_MUTEXES;++index){ //find first location of free mutex
-		if(mutex_used[index].memory_location == 0)
+		if(mutex_used[index].task_id == UNINITIALIZED_MUTEX)
 			return index;
 	}
 	return INTERNAL_ERROR; // couldn't find a free mutex.
@@ -116,12 +115,3 @@ int8_t free_mutex_index_inside_task()
 	return INTERNAL_ERROR; // couldn't find a free mutex.
 }
 
-//checking if the mutex is ready to be unlocked
-flag_t is_mutex_ready(uint8_t mutex_index_inside_array, uint8_t total_mutex_owned_cur_task)
-{
-	if(total_mutex_owned_cur_task==MAX_OWNED_MUTEX_PER_TASK || //max 3 mutexes per task
-			mutex_used[mutex_index_inside_array].task_id == currently_running_task_id){//the task itself already locked it
-		return FALSE;
-	}
-	return TRUE;
-}
