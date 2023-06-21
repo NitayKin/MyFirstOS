@@ -1,39 +1,41 @@
 #include "user_tasks.h"
-void empty_task()
-{
-    delete_task();
-}
+
 
 mutex_ptr mutex_mem_first;
-mutex_ptr mutex_mem_second;
+int32_t x = 0;
 
 void first_task()
 {
 	mutex_mem_first = create_mutex_system_call();
-	mutex_mem_second = create_mutex_system_call();
 	create_task_system_call(second_task,5);
 	create_task_system_call(third_task,5);
-    while(1)
+	int tmp = 0;
+	int tmp_2;
+    while(tmp<5)
     {
     	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	print_func_stub("abc", 3);
+    	tmp_2 = x;
+    	wait_timer_ticks_system_call(30);
+    	tmp_2++;
+    	x=tmp_2;
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
-    	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
+    	tmp++;
     }
     delete_task_system_call();
 }
 
 void second_task()
 {
-    while(1)
+	int tmp = 0;
+	int tmp_2;
+    while(tmp<10000)
     {
     	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	print_func_stub("ghi", 3);
+    	tmp_2 = x;
+    	tmp_2++;
+    	x=tmp_2;
     	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
-    	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
-    	delete_mutex_system_call(mutex_mem_first);
+    	tmp++;
     }
     delete_task_system_call();
 }
@@ -42,13 +44,8 @@ void third_task()
 {
     while(1)
     {
-    	while(lock_mutex_system_call(mutex_mem_first)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	while(lock_mutex_system_call(mutex_mem_second)!=SYS_CALL_SUCCESS); //trying to acquire lock, yielding cpu otherwise
-    	wait_timer_ticks_system_call(20); // waiting
-    	print_func_stub("def", 3);
-    	unlock_mutex_system_call(mutex_mem_first); //unlocking the mutex
-    	unlock_mutex_system_call(mutex_mem_second); //unlocking the mutex
-        delete_task_system_call(); //deleting task
+    	print_hex(&x,4);
+    	wait_timer_ticks_system_call(10);
     }
 }
 
