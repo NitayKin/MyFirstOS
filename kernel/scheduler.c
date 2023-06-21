@@ -12,22 +12,20 @@ void scheduler()
 		tmp_cur_tsk = currently_running_task_id;
 		currently_running_task_id++;
 	}
-    if (total_tasks > 0)
-    {
-    	do{ // check all tasks
-			if(tasks[currently_running_task_id].status == alive){ //if we got task ready to run - break.
-				break;
-			}
-			if(tmp_cur_tsk == currently_running_task_id){ // we returned to the same task again - which means they are all waiting\terminated
-				currently_running_task_id = IDLE_TASK_ID; // idle task
-				break;
-			}
-			else{
-				if (currently_running_task_id == LAST_USER_TASK_ID) // got to last task - return back
-					currently_running_task_id = 0;
-				else //didnt get to last task - check next.
-					currently_running_task_id++;
-			}
-    	}while(currently_running_task_id <= LAST_USER_TASK_ID);
-    }
+
+	do{ // check all tasks
+		if(tasks[currently_running_task_id].status == alive){ //if we got task ready to run - break.
+			break;
+		}
+		if(tmp_cur_tsk == currently_running_task_id){ // we returned to the same task again - which means they are all waiting\terminated
+			currently_running_task_id = IDLE_TASK_ID; // idle task
+			break;
+		}
+		else{
+			if (currently_running_task_id == LAST_USER_TASK_ID) // got to last task - return back
+				currently_running_task_id = 0;
+			else //didnt get to last task - check next.
+				currently_running_task_id++;
+		}
+	}while(currently_running_task_id <= LAST_USER_TASK_ID);
 }
