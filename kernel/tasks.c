@@ -1,8 +1,8 @@
 #include "tasks.h"
 
-
-task_description_t tasks[MAX_USER_TASKS] = {[0 ... MAX_USER_TASKS-2] = {0,0,0,0,{0,0,0},0,0,0,0,0,0,0,0,0,0,0},
-															 	 	 [8] = {.status = alive,
+uint8_t tasks_priority_order[MAX_USER_TASKS] = {[0 ... MAX_USER_TASKS-1] = MOCK_TASK};
+task_description_t tasks[MAX_TASKS] = {[0 ... MAX_USER_TASKS-1] = {0,0,0,0,{0,0,0},0,0,0,0,0,0,0,0,0,0,0}, //for user tasks
+															 	 	 [9] = {.status = alive, //for idle task
 																	 .id = IDLE_TASK_ID,
 																	 .total_mutex_own = 0,
 																	 .mutex_wait = 0,
@@ -17,7 +17,7 @@ task_description_t tasks[MAX_USER_TASKS] = {[0 ... MAX_USER_TASKS-2] = {0,0,0,0,
 																	 .eflags = (uint32_t)0x202,
 																	 .ticks_to_wait = 0,
 																	 .base_priority = 0,
-																	 .inherited_priority = 0}}; //last task is idle one
+																	 .actual_priority = 0}}; //last task is idle one
 
 uint8_t total_tasks = 1; // always at least 1 - the kernel\task which spawned from him.
 uint8_t currently_running_task_id = 0; // 0 at start is the kernel task. it will be deleted after initializing everything, and could be used by others.
@@ -33,8 +33,9 @@ status create_task(void* task_address,uint8_t priority)
 		tasks[next_free_task_id].eflags = (uint32_t)0x202;
 		tasks[next_free_task_id].id = next_free_task_id;
 		tasks[next_free_task_id].base_priority = priority;
-		tasks[next_free_task_id].inherited_priority = priority;
+		tasks[next_free_task_id].actual_priority = priority;
 		total_tasks++;
+		insert_task_priority_queue(next_free_task_id);
 		return SYS_CALL_SUCCESS;
 	}
 	else
@@ -58,8 +59,9 @@ void delete_task()
     memset(tasks[currently_running_task_id].mutex_own, 0, sizeof(mutex_ptr)*3);
     tasks[currently_running_task_id].mutex_wait = 0;
     tasks[currently_running_task_id].base_priority = 0;
-    tasks[currently_running_task_id].inherited_priority = 0;
+    tasks[currently_running_task_id].actual_priority = 0;
     total_tasks--;
+    delete_task_priority_queue(currently_running_task_id);
 }
 
 int8_t find_empty_task_slot()
@@ -90,6 +92,48 @@ void release_all_task_mutexes()
 }
 
 
+
+void insert_task_priority_queue(int8_t task_id)
+{
+	int index = 0;
+	int tmp_task_id;
+	while(tasks_priority_order[index]!= MOCK_TASK){
+		if (tasks[tasks_priority_order[index]].actual_priority<=tasks[task_id].actual_priority){
+			tmp_task_id = tasks_priority_order[index];
+			tasks_priority_order[index] = task_id;
+			task_id = tmp_task_id;
+		}
+		index++;
+	}
+	tasks_priority_order[index] = task_id;
+}
+
+void delete_task_priority_queue(int8_t task_id)
+{
+	int index = 0;
+	int tmp_task_id;
+	while(tasks_priority_order[index]!= MOCK_TASK){
+		if (tasks_priority_order[index]==task_id){
+			break;
+		}
+		index++;
+	}
+
+	while(index!=MAX_USER_TASKS-1){
+		tasks_priority_order[index] = tasks_priority_order[index+1];
+		index++;
+	}
+	tasks_priority_order[index] = MOCK_TASK;
+}
+
+void update_task_priority_queue(int8_t task_id)
+{
+	delete_task_priority_queue(task_id);
+	insert_task_priority_queue(task_id);
+}
+
+
+
 void idle_task()
 {
     while(1){};
@@ -107,7 +151,7 @@ void get_task_by_id(task_description_t* td,uint8_t id)
 
 void print_tasks()
 {
-    for(int i=0;i<MAX_USER_TASKS;++i){
+    for(int i=0;i<=LAST_USER_TASK_ID;++i){
         if(tasks[i].status==alive){
             print("new task:",9);
             print("ebp of task:",12);

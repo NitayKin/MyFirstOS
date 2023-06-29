@@ -24,19 +24,23 @@ typedef struct{
     uint32_t eflags;
     uint32_t ticks_to_wait;
     uint8_t base_priority;
-    uint8_t inherited_priority; //should be equal to priority, unless higher priority task waiting for its mutex.
+    uint8_t actual_priority; //should be equal to priority, unless higher priority task waiting for its mutex.
 } task_description_t;
 
-extern task_description_t tasks[MAX_USER_TASKS];
+extern task_description_t tasks[MAX_TASKS];
+extern uint8_t tasks_priority_order[MAX_USER_TASKS];
 extern uint8_t total_tasks;
 extern uint8_t currently_running_task_id;
-extern uint32_t check;
 
 status create_task(void*,uint8_t);// should be an interrupt!
 void delete_task(void);// should be an interrupt!
 int8_t find_empty_task_slot(void);
 void release_all_task_mutexes(void);
+void update_task_priority_list(int8_t);
 void get_task_by_id(task_description_t*,uint8_t);
+void insert_task_priority_queue(int8_t);
+void delete_task_priority_queue(int8_t);
+void update_task_priority_queue(int8_t);
 void print_tasks(void);
 void print_task_id(uint8_t);
 void idle_task(); // if all tasks sleep - this will run.

@@ -7,8 +7,8 @@ int32_t global_variable = 0;
 void first_task()
 {
 	mutex_mem_first = create_mutex_system_call();
-	create_task_system_call(second_task,5);
-	create_task_system_call(third_task,5);
+	create_task_system_call(second_task,7);
+	create_task_system_call(third_task,10);
 	int local_counter = 0;
 	int local_tmp;
     while(local_counter<5)

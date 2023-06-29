@@ -41,12 +41,13 @@ status lock_mutex(mutex_ptr mutex_memory_location)
 	uint8_t mutex_index_inside_array = ((uint32_t)mutex_memory_location-MUTEX_MEMORY_LOCATION)/sizeof(uint32_t); // finding the lcoation of the mutex in array
 	uint8_t total_mutex_owned_cur_task = tasks[currently_running_task_id].total_mutex_own; //the number of mutexes the current task is owning
 	uint8_t free_mutex_location = free_mutex_index_inside_task(); //finding free mutex location
+	int8_t task_id_cuurrently_acquired = mutex_used[mutex_index_inside_array].task_id;
 	if(total_mutex_owned_cur_task==MAX_OWNED_MUTEX_PER_TASK) //max 3 mutexes per task
 		return SYS_CALL_ERR;
-	if(mutex_used[mutex_index_inside_array].task_id == UNINITIALIZED_MUTEX || mutex_used[mutex_index_inside_array].task_id == currently_running_task_id)//mutex is not initialized/locked by same process - not need to lock/wait for it.
+	if(task_id_cuurrently_acquired == UNINITIALIZED_MUTEX || task_id_cuurrently_acquired == currently_running_task_id)//mutex is not initialized/locked by same process - not need to lock/wait for it.
 		return SYS_CALL_SUCCESS;
 
-	if(mutex_used[mutex_index_inside_array].task_id == INITIALIZED_MUTEX){ // free mutex
+	if(task_id_cuurrently_acquired == INITIALIZED_MUTEX){ // free mutex
 		mutex_used[mutex_index_inside_array].task_id = currently_running_task_id;
 		tasks[currently_running_task_id].mutex_own[free_mutex_location] = mutex_memory_location;
 		tasks[currently_running_task_id].total_mutex_own++;
@@ -55,6 +56,9 @@ status lock_mutex(mutex_ptr mutex_memory_location)
 		if(tasks[currently_running_task_id].mutex_wait != mutex_memory_location){ // the task is not already waiting for this mutex, update the waiting queue
 			tasks[currently_running_task_id].mutex_wait = mutex_memory_location; //remembering the mutex memory location to wait
 			tasks[currently_running_task_id].status = waiting; // the process is now waiting for the mutex - will not conitnue after calling to the scheduler
+			if(tasks[currently_running_task_id].base_priority > tasks[task_id_cuurrently_acquired].actual_priority) //priority inversion fix
+				tasks[task_id_cuurrently_acquired].actual_priority = tasks[currently_running_task_id].base_priority;
+				update_task_priority_queue(task_id_cuurrently_acquired);
 		}
 		return SYS_CALL_ERR;
 	}
@@ -76,6 +80,10 @@ status unlock_mutex(mutex_ptr mutex_memory_location)
 				tasks[tmp_task_idx].mutex_wait = 0;
 				tasks[tmp_task_idx].status = alive;
 			}
+		}
+		if(tasks[currently_running_task_id].actual_priority != tasks[currently_running_task_id].base_priority){
+			tasks[currently_running_task_id].actual_priority = tasks[currently_running_task_id].base_priority; //return to base priority.
+			update_task_priority_queue(currently_running_task_id);
 		}
 		return SYS_CALL_SUCCESS;
 	}

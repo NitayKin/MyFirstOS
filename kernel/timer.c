@@ -38,7 +38,7 @@ void wait_timer_ticks(uint32_t ticks_to_wait)
 
 void decrease_global_waiting_timer_ticks(void)
 {
-	 for(int i=0;i<MAX_USER_TASKS;++i){
+	 for(int i=0;i<=LAST_USER_TASK_ID;++i){
 	        if(tasks[i].ticks_to_wait>0){
 	        	tasks[i].ticks_to_wait--;
 	        	if(tasks[i].ticks_to_wait == 0)
