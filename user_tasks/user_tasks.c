@@ -4,11 +4,11 @@
 mutex_ptr mutex_mem_first;
 int32_t global_variable = 0;
 
-void first_task()
+void increment_global_5_task()
 {
 	mutex_mem_first = create_mutex_system_call();
-	create_task_system_call(second_task,7);
-	create_task_system_call(third_task,10);
+	create_task_system_call(increment_global_10000_task,7);
+	create_task_system_call(print_global_task,10);
 	int local_counter = 0;
 	int local_tmp;
     while(local_counter<5)
@@ -24,7 +24,7 @@ void first_task()
     delete_task_system_call();
 }
 
-void second_task()
+void increment_global_10000_task()
 {
 	int local_counter = 0;
 	int local_tmp;
@@ -40,11 +40,12 @@ void second_task()
     delete_task_system_call();
 }
 
-void third_task()
+void print_global_task()
 {
 	int local_counter = 0;
     while(local_counter<7)
     {
+    	print_func_stub("the counter is:",16);
     	print_hex(&global_variable,4);
     	wait_timer_ticks_system_call(50);
     	local_counter++;

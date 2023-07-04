@@ -32,8 +32,9 @@ void delete_char() //deleting 1 char from screen
 }
 
 
-void print_hex(char* word, int length) //printing string on screen
+void print_hex(char* word, int length) //printing hex on screen
 {
+	print("0x",2);
     if(length == 4) // if int32(4 bytes) = we want to print backwards. (little endian)
         word += length-1;
     for(int i=0;i<length;++i)

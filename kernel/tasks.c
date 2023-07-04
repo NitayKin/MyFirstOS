@@ -111,7 +111,6 @@ void insert_task_priority_queue(int8_t task_id)
 void delete_task_priority_queue(int8_t task_id)
 {
 	int index = 0;
-	int tmp_task_id;
 	while(tasks_priority_order[index]!= MOCK_TASK){
 		if (tasks_priority_order[index]==task_id){
 			break;
