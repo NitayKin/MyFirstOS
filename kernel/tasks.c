@@ -132,7 +132,7 @@ void update_task_priority_queue(int8_t task_id)
 }
 
 
-
+//idle task - to make the system responsive for interrupts when there are no tasks to run
 void idle_task()
 {
     while(1){};

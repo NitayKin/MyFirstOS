@@ -15,10 +15,10 @@ extern uint8_t total_mutexes; // how many mutexes are in use
 
 mutex_ptr create_mutex(void);
 status delete_mutex(mutex_ptr);
-status lock_mutex(mutex_ptr);
-status unlock_mutex(mutex_ptr);
+status lock_mutex(uint8_t, mutex_ptr);
+status unlock_mutex(uint8_t, mutex_ptr);
+int8_t mutex_index_inside_task(uint8_t, mutex_ptr);
+int8_t free_mutex_index_inside_task(uint8_t);
 status free_mutex_index_inside_global_array(void);
-int8_t mutex_index_inside_task(mutex_ptr);
-int8_t free_mutex_index_inside_task();
 
 #endif

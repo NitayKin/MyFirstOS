@@ -5,8 +5,8 @@
 #include "../kernel/user_system_calls.h"
 #include "../kernel/common_defintions.h"
 
-void increment_global_5_task();
-void increment_global_10000_task();
+void main_user_task();
+void increment_global_task();
 void print_global_task();
 
 #endif

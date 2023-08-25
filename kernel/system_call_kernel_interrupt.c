@@ -33,7 +33,7 @@ void system_call_handler(void* x)
         case 4: // lock_mutex - locking a mutex or waiting untill it is unlocked
         	status lock_mutex_status;
             __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to lock
-            lock_mutex_status = lock_mutex(ebx_data); //get the lock mutex status
+            lock_mutex_status = lock_mutex(currently_running_task_id,ebx_data); //get the lock mutex status
     		__asm__ volatile("mov ebx,%0"::"r" (lock_mutex_status)); // return the status
             if(tasks[currently_running_task_id].status == waiting){ //if current task went into waiting condition - context switch.
             	context_switch(); //switch to the next task
@@ -42,7 +42,7 @@ void system_call_handler(void* x)
 
         case 5: // unlock_mutex - unlocking a mutex
             __asm__ volatile ("mov %0,ebx": "=r" (ebx_data)); // get mutex_ptr to the mutex we want to unlock
-    		__asm__ volatile("mov ebx,%0"::"r" (unlock_mutex(ebx_data))); // unlock the mutex, and return the status
+    		__asm__ volatile("mov ebx,%0"::"r" (unlock_mutex(currently_running_task_id,ebx_data))); // unlock the mutex, and return the status
         	break;
 
         case 6: // wait_timer_ticks - waiting X timer ticks
